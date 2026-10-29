@@ -16,7 +16,19 @@
   const illo = (cls = "") => `<div class="illo ${cls}" aria-hidden="true"><span></span><span></span><span></span></div>`;
   const icon = () => `<div class="icon" aria-hidden="true"></div>`;
 
-  // AI 전형형: E1 중앙 정렬 히어로, E2 균일한 3열 카드, E3 섹션 간 동일 여백, E4 반복되는 섹션 구성
+  // 히어로: 코딩 결과 E1(중앙 정렬 히어로)이 채택되지 않아 두 조건이 같은 좌우 분할 히어로를 쓴다
+  const hero = (svc, c) => `
+        <header class="split-hero">
+          <div class="split-hero-text">
+            <p class="eyebrow">${esc(svc.category)}</p>
+            <h1>${esc(c.hero.title)}</h1>
+            <p class="lead">${esc(c.hero.body)}</p>
+            ${ctaButtons()}
+          </div>
+          ${illo("tall")}
+        </header>`;
+
+  // AI 전형형(코딩 결과 채택 요소): E2 균일한 3열 카드, E3 섹션 간 동일 여백, E4 반복되는 섹션 구성
   function renderAI(svc, c) {
     const section = (id, h, lead, cards) => `
       <section class="ai-sec" id="${id}">
@@ -27,13 +39,7 @@
     return `
       <div class="page ai">
         ${nav(svc.brand)}
-        <header class="ai-hero ai-sec">
-          <p class="eyebrow">${esc(svc.category)}</p>
-          <h1>${esc(c.hero.title)}</h1>
-          <p class="lead">${esc(c.hero.body)}</p>
-          ${ctaButtons()}
-          ${illo("wide")}
-        </header>
+        ${hero(svc, c)}
         ${section("features", c.features.heading, c.features.lead, c.features.items.map((i) => card(i.title, i.body)).join(""))}
         ${section("steps", c.steps.heading, c.steps.lead, c.steps.items.map((i) => card(i.title, i.body)).join(""))}
         ${section("pricing", c.pricing.heading, c.pricing.lead, c.pricing.plans.map((p) => card(p.name, p.body, `<p class="plan-label">${esc(p.label)}</p>`)).join(""))}
@@ -43,22 +49,14 @@
   }
 
   // 위계 설계형: 각 AI 전형 요소에 대응하는 위계 원칙
-  //  E1 -> 왼쪽 정렬로 읽기 시작점 고정, E2 -> 중요도에 따라 카드 크기 차등,
+  //  E2 -> 중요도에 따라 카드 크기 차등,
   //  E3 -> 묶음 안 간격 < 묶음 사이 간격, E4 -> 내용에 맞는 형식(비교표, 목록)
   function renderH(svc, c) {
     const f = c.features.items;
     return `
       <div class="page hi">
         ${nav(svc.brand)}
-        <header class="hi-hero">
-          <div class="hi-hero-text">
-            <p class="eyebrow">${esc(svc.category)}</p>
-            <h1>${esc(c.hero.title)}</h1>
-            <p class="lead">${esc(c.hero.body)}</p>
-            ${ctaButtons()}
-          </div>
-          ${illo("tall")}
-        </header>
+        ${hero(svc, c)}
 
         <section class="hi-sec" id="features">
           <div class="hi-head"><h2>${esc(c.features.heading)}</h2><p class="lead">${esc(c.features.lead)}</p></div>
