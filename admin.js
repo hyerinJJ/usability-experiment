@@ -113,7 +113,7 @@
       <h2>참가자</h2>
       <p class="note">제외할 참가자는 체크하고 사유를 적은 뒤 저장하세요. 제외하면 결과 요약과 분석용 파일에서 빠지고, 그 칸에 한 명이 다시 배정됩니다. 탭 이탈 ${C.TAB_EXCLUDE_SEC}초 이상인 과업은 자동으로 분석에서 빠집니다.</p>
       <div class="scroll"><table>
-        <tr><th>코드</th><th>구분</th><th>칸</th><th>상태</th><th>시작</th><th>소요(분)</th><th>과업 기록</th><th>탭 이탈 제외 과업</th><th>브라우저</th><th>창 크기</th><th>제외</th><th class="l">제외 사유(자동 기록)</th><th></th></tr>
+        <tr><th>코드</th><th>구분</th><th>칸</th><th>상태</th><th>시작</th><th>소요(분)</th><th>과업 기록</th><th>탭 이탈 제외 과업</th><th>브라우저</th><th>창 크기</th><th>제외</th><th class="l">제외 사유(자동 기록)</th><th></th><th></th></tr>
         ${rows.map((p) => `<tr class="${p.excluded ? "ex" : ""}" data-pid="${esc(p.pid)}">
           <td><b>${esc(p.pid)}</b></td><td>${p.pilot ? "파일럿" : "본 실험"}</td><td>${p.cell}</td><td>${tagOf(p)}</td>
           <td>${fmtTime(p.started_at)}</td><td>${p.total_sec ? (p.total_sec / 60).toFixed(1) : ""}</td>
@@ -121,8 +121,12 @@
           <td>${esc(p.browser)}</td><td>${esc(p.window_w)}×${esc(p.window_h)}</td>
           <td class="act"><input type="checkbox" class="exc" ${p.excluded ? "checked" : ""}></td>
           <td class="act l"><input type="text" class="rsn" value="${esc(p.exclude_reason || "")}" placeholder="제외 사유" style="width:200px">${p.note ? `<div class="note">${esc(p.note)}</div>` : ""}</td>
-          <td class="act"><button class="b sv">저장</button></td></tr>`).join("")}
-      </table></div>`;
+          <td class="act"><button class="b sv">저장</button></td>
+          <td class="act"><button class="b p dt">기록 보기</button></td></tr>`).join("")}
+      </table></div>
+      <div id="detail"></div>`;
+    document.querySelectorAll("#s-people .dt").forEach((b) => b.addEventListener("click", () => showDetail(b.closest("tr").dataset.pid)));
+    if (openPid) showDetail(openPid, true);
     document.querySelectorAll("#s-people .sv").forEach((b) => b.addEventListener("click", async () => {
       const tr = b.closest("tr"); b.textContent = "저장 중";
       try {
@@ -130,6 +134,61 @@
         await load();
       } catch (e) { b.textContent = "실패"; alertMsg(e.message); }
     }));
+  }
+
+  // ---------- 참가자 한 명의 상세 기록
+  let openPid = null;
+  const SVCN = { schedule: "일정 관리", inventory: "재고 관리", accounting: "회계 자동화", support: "고객 응대" };
+  const resTag = (r) => String(r) === "1" ? '<span class="tag t-done">정답</span>' : String(r) === "T" ? '<span class="tag t-old">시간 초과</span>' : '<span class="tag t-stop">오답</span>';
+  function evText(t) {
+    let ev = []; try { ev = JSON.parse(t.events || "[]"); } catch (e) {}
+    if (!ev.length) return '<span class="note">조작 없음</span>';
+    const name = { trial: "무료 체험", contact: "상담 문의", demo: "데모 신청" };
+    return ev.map((e) => {
+      const sec = (e.t / 1000).toFixed(1) + "초";
+      if (e.type === "back") return `<span class="ev back">${sec} 뒤로 가기</span>`;
+      if (e.type === "click-other") return `<span class="ev miss">${sec} 빈 곳 클릭</span>`;
+      const tk = window.SERVICES[t.service] && window.SERVICES[t.service].tasks.find((x) => x.id === t.task);
+      const tg = name[e.target] || (/^\d$/.test(String(e.target)) ? `보기 "${tk && tk.choices ? tk.choices[+e.target] : +e.target + 1}" 선택` : e.target);
+      return `<span class="ev">${sec} ${esc(tg)}</span>`;
+    }).join(" → ");
+  }
+  function showDetail(pid, keep) {
+    openPid = pid;
+    const p = D.participants.find((x) => x.pid === pid); if (!p) return;
+    const T = D.tasks.filter((t) => t.pid === pid).sort((a, b) => a.position - b.position || String(a.task).localeCompare(String(b.task)));
+    const S = D.surveys.filter((x) => x.pid === pid);
+    const cond = (pos) => S.find((x) => x.kind === "condition" && +x.position === pos);
+    const ai = (pos) => S.find((x) => x.kind === "ai" && +x.position === pos);
+    const open = S.find((x) => x.kind === "open");
+    const positions = [...new Set(T.map((t) => +t.position).concat(S.filter((x) => x.kind === "condition").map((x) => +x.position)))].sort();
+    const ok = T.filter((t) => String(t.result) === "1").length;
+    $("#detail").innerHTML = `
+      <div class="detail">
+        <div class="row" style="justify-content:space-between"><h2 style="margin:0">${esc(pid)} 상세 기록</h2><button class="b" id="dclose">닫기</button></div>
+        <div class="cards">
+          <div class="card"><div class="k">구분, 칸</div><div class="v" style="font-size:18px">${p.pilot ? "파일럿" : "본 실험"}, ${p.cell}칸</div></div>
+          <div class="card"><div class="k">상태</div><div class="v" style="font-size:18px">${tagOf(p)}</div></div>
+          <div class="card"><div class="k">소요 시간</div><div class="v" style="font-size:18px">${p.total_sec ? (p.total_sec / 60).toFixed(1) + "분" : "-"}</div></div>
+          <div class="card"><div class="k">정답 과업</div><div class="v" style="font-size:18px">${ok} / ${T.length}</div></div>
+          <div class="card"><div class="k">사전 질문</div><div class="v" style="font-size:13px;font-weight:600;line-height:1.6">${esc(p.age || "-")}, ${esc(p.gender || "-")}<br>웹 ${esc(p.web_freq || "-")}/5, AI ${esc(p.ai_freq || "-")}/5</div></div>
+        </div>
+        ${positions.map((pos) => {
+          const tt = T.filter((t) => +t.position === pos); const c = cond(pos); const a = ai(pos);
+          const condName = (tt[0] || c || {}).condition, svc = (tt[0] || c || {}).service;
+          return `<h3>${pos}번째 페이지: ${esc(condName || "")} (${esc(SVCN[svc] || svc || "")})</h3>
+            <table><tr><th>과업</th><th>결과</th><th>시간(초)</th><th>이벤트(TEN)</th><th>이벤트 효율</th><th>뒤로 가기</th><th>빈 곳 클릭</th><th>스크롤 깊이</th><th>탭 이탈</th><th class="l">조작 순서</th></tr>
+            ${tt.map((t) => `<tr class="${String(t.exclude_tab) === "1" ? "ex" : ""}"><td><b>${esc(t.task)}</b></td><td>${resTag(t.result)}</td><td>${esc(t.tct_sec)}</td><td>${esc(t.ten)}</td><td>${t.event_eff === "" ? "-" : esc(t.event_eff) + "%"}</td><td>${esc(t.back)}</td><td>${esc(t.non_interactive_clicks)}</td><td>${esc(t.max_scroll_pct)}%</td>
+              <td class="${+t.tab_leaves ? "flag" : ""}">${+t.tab_leaves ? `${t.tab_leaves}회 ${t.tab_hidden_sec}초${String(t.exclude_tab) === "1" ? " (제외)" : ""}` : "-"}</td><td class="l" style="white-space:normal">${evText(t)}</td></tr>`).join("") || '<tr><td colspan="10" class="note">과업 기록 없음</td></tr>'}
+            </table>
+            <p class="note">${c ? `퀴즈 ${c.quiz_total}/3 (문항별 ${c.quiz1}, ${c.quiz2}, ${c.quiz3}) &nbsp; SUS ${esc(c.sus_score)}점 (응답 ${esc(c.sus_items)})` : "퀴즈와 SUS 응답 없음"}${a ? ` &nbsp; AI 생성 지각도 ${esc(a.ai_rating)}/7` : ""}</p>`;
+        }).join("")}
+        <h3>주관식 응답</h3>
+        ${open ? `<div class="fb">가장 어려웠던 정보: ${esc(open.open1)}\n이유: ${esc(open.open2)}</div>` : '<p class="note">응답 없음</p>'}
+        ${p.pilot_feedback ? `<h3>파일럿 의견</h3><div class="fb">${esc(p.pilot_feedback)}</div>` : ""}
+      </div>`;
+    $("#dclose").addEventListener("click", () => { openPid = null; $("#detail").innerHTML = ""; });
+    if (!keep) $("#detail").scrollIntoView({ behavior: "smooth" });
   }
 
   // ---------- 결과 요약(기술 통계)
