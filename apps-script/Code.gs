@@ -141,3 +141,9 @@ function upsert(name, obj) {
 function pick(o, keys) { const r = {}; keys.forEach(function (k) { if (o && o[k] !== undefined) r[k] = o[k]; }); return r; }
 function truthy(v) { return v === 1 || v === true || v === "1" || v === "TRUE" || v === "true"; }
 function appendNote(note, add) { return add ? (note ? note + " / " : "") + add : (note || ""); }
+
+// 처음 한 번 편집기에서 실행: 시트 접근 권한을 허용하고 시트 탭 3개를 만든다.
+function setup() {
+  ["participants", "tasks", "surveys"].forEach(sh);
+  Logger.log("준비 완료: " + SpreadsheetApp.getActiveSpreadsheet().getName());
+}
