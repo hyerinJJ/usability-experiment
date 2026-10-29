@@ -39,7 +39,7 @@ function handle(req) {
   if (a === "ping") return {};
   if (a === "start") return start(req);
   if (a.indexOf("admin_") === 0) {
-    if (String(req.key) !== ADMIN_KEY || ADMIN_KEY === "여기에_관리자_비밀번호") throw new Error("관리자 비밀번호가 맞지 않습니다.");
+    if (String(req.key).trim() !== String(ADMIN_KEY).trim() || String(ADMIN_KEY) === "여기에_관리자_비밀번호") throw new Error("관리자 비밀번호가 맞지 않습니다.");
     if (a === "admin_data") return { participants: clean(readAll("participants")), tasks: clean(readAll("tasks")), surveys: clean(readAll("surveys")), target: TARGET_PER_CELL, cells: N_CELLS };
     if (a === "admin_update") return adminUpdate(req);
     if (a === "admin_delete_pilot") return deletePilot();
