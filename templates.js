@@ -7,6 +7,12 @@
   const nav = (brand) => `
     <nav class="nav"><span class="logo">${esc(brand)}</span>
       <span class="nav-links"><a href="#" data-nolink>기능</a><a href="#" data-nolink>요금제</a><a href="#" data-nolink>자주 묻는 질문</a></span></nav>`;
+  // 히어로에는 데모 신청을 두지 않는다(T3 목표는 마지막 신청 영역에만 있음)
+  const heroButtons = () => `
+    <div class="btns">
+      <button class="btn" data-go="trial">무료 체험</button>
+      <button class="btn" data-go="contact">상담 문의</button>
+    </div>`;
   const ctaButtons = () => `
     <div class="btns">
       <button class="btn" data-go="trial">무료 체험</button>
@@ -23,7 +29,7 @@
             <p class="eyebrow">${esc(svc.category)}</p>
             <h1>${esc(c.hero.title)}</h1>
             <p class="lead">${esc(c.hero.body)}</p>
-            ${ctaButtons()}
+            ${heroButtons()}
           </div>
           ${illo("tall")}
         </header>`;
