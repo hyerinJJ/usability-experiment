@@ -326,6 +326,7 @@
       <table class="links">
         <tr><th class="l">용도</th><th class="l">주소</th></tr>
         <tr><td><b>참가자에게 보낼 링크</b></td><td><a href="${L("")}" target="_blank">${L("")}</a></td></tr>
+        ${Object.entries(C.CODES || {}).map(([k, v]) => `<tr><td>참여 코드 <b>${esc(k)}</b></td><td>${v === "pilot" ? "파일럿으로 진행" : "본 실험으로 진행(칸 자동 배정)"}</td></tr>`).join("")}
         <tr><td><b>파일럿(자동 칸)</b></td><td><a href="${L("?pilot=1")}" target="_blank">${L("?pilot=1")}</a></td></tr>
         ${[1, 2, 3, 4, 5, 6, 7, 8].map((c) => `<tr><td>파일럿 칸 ${c}</td><td><a href="${L("?pilot=1&cell=" + c)}" target="_blank">${L("?pilot=1&cell=" + c)}</a></td></tr>`).join("")}
         <tr><td>이 브라우저 기록 초기화</td><td><a href="${L("?pilot=1&reset=1")}" target="_blank">${L("?pilot=1&reset=1")}</a> <span class="note">같은 컴퓨터로 여러 번 테스트할 때</span></td></tr>

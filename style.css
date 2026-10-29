@@ -18,7 +18,40 @@ h1, h2, h3 { margin:0; color:var(--ink); }
 .illo.wide { height:220px; margin-top:40px; }
 .illo.tall { height:320px; }
 .illo.mini { height:120px; margin-bottom:20px; }
-.icon { width:44px; height:44px; border-radius:12px; background:var(--accentSoft); margin-bottom:16px; }
+.icon { width:44px; height:44px; border-radius:12px; margin-bottom:16px; display:grid; place-items:center; flex:none; }
+.icon svg { width:22px; height:22px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+.t-blue { background:#e9ebfb; color:#4f5bd5; } .t-mint { background:#dff5ec; color:#1f8a5b; } .t-peach { background:#fff0e3; color:#c26a2b; }
+.num { width:36px; height:36px; border-radius:10px; background:var(--ink); color:#fff; font-weight:800; display:grid; place-items:center; margin-bottom:14px; flex:none; }
+.q { display:inline-grid; place-items:center; width:28px; height:28px; border-radius:8px; background:var(--accentSoft); color:var(--accent); font-weight:800; font-size:14px; margin-bottom:12px; flex:none; }
+.btn.primary-btn { background:var(--accent); color:#fff; }
+.btn.primary-btn:hover { background:#3f4ac4; }
+
+/* 공통 히어로 목업 */
+.mock { position:relative; background:#fff; border:1px solid var(--line); border-radius:18px; box-shadow:0 24px 60px rgba(40,52,110,.14); overflow:visible; }
+.mock-top { display:flex; align-items:center; gap:6px; padding:12px 16px; border-bottom:1px solid var(--line); font-size:12px; font-weight:700; color:var(--muted); }
+.mock-top i { width:8px; height:8px; border-radius:50%; background:#e1e4ee; }
+.mock-top span { margin-left:8px; }
+.mock-body { display:grid; grid-template-columns:96px 1fr; min-height:270px; }
+.mock-side { border-right:1px solid var(--line); padding:16px 12px; display:grid; gap:10px; align-content:start; }
+.mock-side b { height:10px; border-radius:5px; background:#eef0f6; }
+.mock-side b.on { background:#dfe2fa; }
+.mock-main { padding:16px; }
+.mock-kpi { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:14px; }
+.mock-kpi div { background:var(--soft); border-radius:10px; padding:10px; }
+.mock-kpi em { display:block; height:6px; width:60%; border-radius:3px; background:#dde1ee; margin-bottom:8px; }
+.mock-kpi strong { display:block; height:12px; width:45%; border-radius:4px; background:#c9cef0; }
+.mock-cols { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+.mock-col { background:#f7f8fc; border-radius:10px; padding:8px; display:grid; gap:7px; align-content:start; }
+.mock-col u { height:6px; width:50%; border-radius:3px; background:#dde1ee; margin:2px 0 4px; }
+.mock-card { background:#fff; border:1px solid #eceef5; border-radius:8px; padding:8px; }
+.mock-card s { display:block; height:8px; width:38%; border-radius:4px; margin-bottom:7px; }
+.mock-card p { height:6px; border-radius:3px; background:#e8eaf2; margin:0 0 5px; }
+.mock-card p.short { width:60%; margin:0; }
+.mock-float { position:absolute; left:-24px; bottom:-18px; background:#fff; border:1px solid var(--line); border-radius:12px; padding:10px 14px; display:flex; gap:10px; align-items:center; box-shadow:0 12px 30px rgba(40,52,110,.12); width:170px; }
+.mock-float .dot { width:26px; height:26px; border-radius:8px; background:#dff5ec; flex:none; }
+.mock-float div { flex:1; } .mock-float p { height:6px; border-radius:3px; background:#e3e6ef; margin:0 0 6px; } .mock-float p.short { width:55%; margin:0; }
+.logos { display:flex; align-items:center; justify-content:space-between; gap:20px; padding:22px 0; border-bottom:1px solid var(--line); color:#9aa1b2; font-weight:800; letter-spacing:.02em; font-size:15px; }
+.logos .logos-label { font-weight:500; font-size:13px; color:var(--muted); letter-spacing:0; }
 
 /* AI 전형형 */
 .ai .ai-sec { padding:96px 0; text-align:center; border-bottom:1px solid var(--line); }      /* E3 동일 여백 */
@@ -26,29 +59,32 @@ h1, h2, h3 { margin:0; color:var(--ink); }
 .ai .lead { max-width:640px; margin:0 auto 40px; font-size:17px; }
 .ai .btns { justify-content:center; }
 .ai .grid3 { display:grid; grid-template-columns:repeat(3, 1fr); gap:24px; }                /* E2 균일한 3열 카드 */
-.ai .card { border:1px solid var(--line); border-radius:16px; padding:28px; text-align:center; display:flex; flex-direction:column; align-items:center; }
+.ai .card { border:1px solid var(--line); border-radius:16px; padding:28px; text-align:center; display:flex; flex-direction:column; align-items:center; background:#fff; box-shadow:0 6px 18px rgba(40,52,110,.05); }
 .ai .card h3 { font-size:19px; margin-bottom:10px; }
 .ai .card .plan-label { margin-bottom:8px; }
 
 /* 위계 설계형 */
 /* 두 조건 공통 히어로(좌우 분할, 왼쪽 정렬) */
-.split-hero { display:grid; grid-template-columns:1.15fr 1fr; gap:48px; align-items:center; padding:72px 0 88px; border-bottom:1px solid var(--line); }
+.split-hero { display:grid; grid-template-columns:1.05fr 1fr; gap:56px; align-items:center; padding:72px 0 88px; }
 .split-hero h1 { font-size:44px; line-height:1.25; margin-bottom:18px; }
 .split-hero .lead { font-size:17px; margin:0 0 28px; max-width:none; }
 .split-hero .btns { justify-content:flex-start; }
 .hi h1 { font-size:44px; line-height:1.25; margin-bottom:18px; }
-.hi .hi-sec { padding:0 0 88px; }                    /* 섹션 사이 간격은 넓게 */
+.hi .hi-sec { padding:0 0 88px; }
+.hi .logos { margin-bottom:88px; }                    /* 섹션 사이 간격은 넓게 */
 .hi .hi-sec.tight { padding-bottom:72px; }
 .hi .hi-head { margin-bottom:24px; }                 /* 묶음 안 간격은 좁게 */
 .hi h2 { font-size:30px; margin-bottom:6px; }
 .hi .hi-feat { display:grid; grid-template-columns:1.4fr 1fr; gap:20px; }                /* 중요도에 따라 카드 크기 차등 */
 .hi .feat-main { background:var(--soft); border-radius:16px; padding:32px; }
 .hi .feat-main h3 { font-size:24px; margin-bottom:10px; }
+.hi .feat-art { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:28px; }
+.hi .feat-art .mock-card { padding:14px; } .hi .feat-art .mock-card p { height:8px; }
 .hi .feat-side { display:grid; gap:20px; }
-.hi .feat-small { border:1px solid var(--line); border-radius:16px; padding:22px; }
+.hi .feat-small { border:1px solid var(--line); border-radius:16px; padding:22px; background:#fff; box-shadow:0 6px 18px rgba(40,52,110,.05); }
 .hi .feat-small h3 { font-size:17px; margin-bottom:6px; }
 .hi .hi-steps { list-style:none; padding:0; margin:0; display:grid; grid-template-columns:repeat(3, 1fr); border-top:2px solid var(--ink); }
-.hi .hi-steps li { padding:16px 16px 0 0; }
+.hi .hi-steps li { padding:18px 16px 0 0; }
 .hi .hi-steps strong { display:block; margin-bottom:4px; }
 .hi .hi-steps span { color:var(--muted); line-height:1.6; }
 .hi .hi-table { width:100%; border-collapse:collapse; text-align:left; }              /* 요금제는 비교표 */
@@ -58,7 +94,8 @@ h1, h2, h3 { margin:0; color:var(--ink); }
 .hi .hi-table tr.key td { font-size:19px; font-weight:800; color:var(--ink); }
 .hi .hi-table td { color:var(--muted); }
 .hi .hi-faq { margin:0; border-top:2px solid var(--ink); }                             /* 자주 묻는 질문은 목록 */
-.hi .hi-faq dt { font-weight:800; font-size:18px; padding-top:18px; }
+.hi .hi-faq dt { font-weight:800; font-size:18px; padding-top:18px; display:flex; align-items:center; gap:10px; }
+.hi .hi-faq dt .q { margin:0; }
 .hi .hi-faq dd { margin:6px 0 0; padding-bottom:18px; border-bottom:1px solid var(--line); color:var(--muted); line-height:1.6; }
 .hi .hi-cta { display:flex; justify-content:space-between; align-items:center; background:var(--soft); border-radius:16px; padding:36px; }
 

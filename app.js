@@ -13,7 +13,8 @@
 
   const qs = new URLSearchParams(location.search);
   const root = document.getElementById("app");
-  const pilot = qs.get("pilot") === "1";
+  let pilot = qs.get("pilot") === "1";
+  let codeDone = pilot || !(window.CONFIG.CODES && Object.keys(window.CONFIG.CODES).length);
   const backup = { tasks: [], surveys: [] };
 
   function assignment(cell) {
@@ -81,24 +82,44 @@
   const leaveGuard = (e) => { e.preventDefault(); e.returnValue = ""; };
 
   // ---------- 진행
+  // 참여 코드: 같은 링크로 들어와도 코드에 따라 본 실험과 파일럿을 나눈다(config.js의 CODES)
+  async function askCode() {
+    screen(`<h1>웹페이지 정보 탐색 평가</h1><p>안내받은 참여 코드를 입력해 주세요.</p>
+      <input id="code" type="text" autocomplete="off" style="font:inherit;font-size:18px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;width:240px">
+      <div class="err"></div><button class="primary" id="go">확인</button>`);
+    const input = root.querySelector("#code"); input.focus();
+    return new Promise((res) => {
+      const check = () => {
+        const v = input.value.trim().toUpperCase();
+        const hit = Object.keys(C.CODES).find((k) => k.toUpperCase() === v);
+        if (!hit) { root.querySelector(".err").textContent = "코드가 맞지 않습니다. 안내받은 코드를 다시 확인해 주세요."; return; }
+        res(C.CODES[hit]);
+      };
+      root.querySelector("#go").addEventListener("click", check);
+      input.addEventListener("keydown", (e) => { if (e.key === "Enter") check(); });
+    });
+  }
+
   async function run() {
+    // 이전 기록 확인(본 실험 참가자는 한 번만 참여)
     const prev = loadSession();
-    if (prev && prev.status === "done" && !pilot) {
-      screen(`<h1>이미 참여를 마치셨습니다</h1><p>참여해 주셔서 감사합니다. 한 사람은 한 번만 참여할 수 있습니다.</p>`);
-      return;
-    }
     if (prev && prev.status === "running") {
       send("abort", prev, { reason: "진행 중 새로고침 또는 재접속" });
       prev.status = "aborted"; saveSession(prev);
-      if (!pilot) {
+      if (!prev.pilot && !pilot) {
         screen(`<h1>실험이 중단되었습니다</h1><p>진행 중에 페이지를 새로 고치거나 닫으면 기록이 이어지지 않아 다시 참여할 수 없습니다. 연구진(${esc(C.CONTACT)})에게 알려 주세요.</p>`);
         return;
       }
     }
-    if (prev && prev.status === "aborted" && !pilot) {
+    if (prev && !prev.pilot && !pilot && prev.status === "done") {
+      screen(`<h1>이미 참여를 마치셨습니다</h1><p>참여해 주셔서 감사합니다. 한 사람은 한 번만 참여할 수 있습니다.</p>`);
+      return;
+    }
+    if (prev && !prev.pilot && !pilot && prev.status === "aborted") {
       screen(`<h1>실험이 중단되었습니다</h1><p>이 브라우저에서는 다시 참여할 수 없습니다. 연구진(${esc(C.CONTACT)})에게 알려 주세요.</p>`);
       return;
     }
+    if (!codeDone) { pilot = (await askCode()) === "pilot"; codeDone = true; }
 
     // 접속 환경 확인
     const mobile = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);

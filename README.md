@@ -6,7 +6,7 @@ AI 생성 서비스 소개 웹페이지의 시각 구조(AI 전형형, 위계 �
 
 | 용도 | 주소 |
 |---|---|
-| 참가자 링크 | `index.html` |
+| 참가자 링크 | `index.html` (첫 화면에서 참여 코드 입력: 본 실험 `UX5`, 파일럿 `PILOT5`, config.js의 CODES에서 변경) |
 | 파일럿 | `index.html?pilot=1` (칸 지정: `&cell=1`~`8`) |
 | 관리자 | `admin.html` |
 | 화면 미리보기 | `index.html?preview=AG&service=schedule` |
