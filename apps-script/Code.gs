@@ -11,7 +11,7 @@ const STALE_MIN = 60;         // 시작 후 이 시간(분)이 지나도 끝나�
 
 const HEAD = {
   participants: ["pid", "token", "pilot", "cell", "status", "started_at", "finished_at", "total_sec",
-    "browser", "window_w", "window_h", "age", "gender", "web_freq", "ai_freq",
+    "browser", "window_w", "window_h", "age", "gender", "major", "design_exp", "genai_web_exp", "plan_compare_exp",
     "excluded", "exclude_reason", "note", "pilot_feedback"],
   tasks: ["key", "pid", "pilot", "cell", "position", "condition", "service", "task", "result", "answer",
     "tct_sec", "tct_censored", "event", "ten", "min_ten", "event_eff", "back", "non_interactive_clicks",
@@ -20,7 +20,7 @@ const HEAD = {
     "quiz_total", "sus_items", "sus_score", "ai_rating", "open1", "open2", "saved_at"]
 };
 
-function doGet() { return out({ ok: true, msg: "실험 서버가 동작 중입니다.", version: 2, key_set: String(ADMIN_KEY) !== "여기에_관리자_비밀번호" }); }
+function doGet() { return out({ ok: true, msg: "실험 서버가 동작 중입니다.", version: 3, key_set: String(ADMIN_KEY) !== "여기에_관리자_비밀번호" }); }
 
 function doPost(e) {
   let req;
@@ -49,7 +49,7 @@ function handle(req) {
   const p = findParticipant(req.pid);
   if (!p || String(p.token) !== String(req.token)) throw new Error("참가자 정보가 맞지 않습니다.");
   const now = new Date().toISOString();
-  if (a === "pre") { updateRow("participants", p._row, pick(req.data, ["age", "gender", "web_freq", "ai_freq"])); return {}; }
+  if (a === "pre") { updateRow("participants", p._row, pick(req.data, ["age", "gender", "major", "design_exp", "genai_web_exp", "plan_compare_exp"])); return {}; }
   if (a === "task") { const r = req.data; r.key = [p.pid, r.position, r.task].join("|"); r.pid = p.pid; r.pilot = p.pilot; r.cell = p.cell; r.saved_at = now; upsert("tasks", r); return {}; }
   if (a === "survey") { const r = req.data; r.key = [p.pid, r.kind, r.position || 0].join("|"); r.pid = p.pid; r.pilot = p.pilot; r.saved_at = now; upsert("surveys", r); return {}; }
   if (a === "finish") {
@@ -119,6 +119,9 @@ function sh(name) {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   let s = ss.getSheetByName(name);
   if (!s) { s = ss.insertSheet(name); s.appendRow(HEAD[name]); s.setFrozenRows(1); }
+  // 열 구성이 바뀌었으면 첫 줄(열 이름)을 새 구성으로 맞춘다
+  const cur = s.getRange(1, 1, 1, HEAD[name].length).getValues()[0];
+  if (cur.join("|") !== HEAD[name].join("|")) s.getRange(1, 1, 1, HEAD[name].length).setValues([HEAD[name]]);
   return s;
 }
 function readAll(name) {

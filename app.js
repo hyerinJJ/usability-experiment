@@ -47,6 +47,7 @@
   function likert(name, labels) {
     return `<div class="likert">${labels.map((l, i) => `<label><input type="radio" name="${name}" value="${i + 1}"> ${i + 1}${l ? " " + l : ""}</label>`).join("")}</div>`;
   }
+  function radioQ(name, legend, opts) { return `<fieldset data-q="${name}"><legend>${legend}</legend>${opts.map((l) => `<label><input type="radio" name="${name}" value="${l}"> ${l}</label>`).join(" &nbsp; ")}</fieldset>`; }
   function val(name) { const el = root.querySelector(`input[name="${name}"]:checked`); return el ? el.value : ""; }
   // 모든 필수 문항에 답해야 다음으로 넘어간다
   function waitValid(names, extra) {
@@ -181,11 +182,13 @@
     screen(`<h1>사전 질문</h1>
       <fieldset data-q="age"><legend>연령대</legend>${["만 19세 이하", "20~24세", "25~29세", "30세 이상"].map((l, i) => `<label><input type="radio" name="age" value="${l}"> ${l}</label>`).join(" &nbsp; ")}</fieldset>
       <fieldset data-q="gender"><legend>성별</legend>${["여성", "남성", "응답하지 않음"].map((l) => `<label><input type="radio" name="gender" value="${l}"> ${l}</label>`).join(" &nbsp; ")}</fieldset>
-      <fieldset data-q="web"><legend>평소 PC로 웹사이트를 얼마나 자주 이용하나요?</legend>${likert("web", ["거의 안 함", "", "", "", "매일 여러 번"])}</fieldset>
-      <fieldset data-q="ai"><legend>생성형 AI(ChatGPT 등)를 얼마나 자주 사용하나요?</legend>${likert("ai", ["전혀", "", "", "", "매일"])}</fieldset>
+      ${radioQ("major", "전공 계열", ["공학", "자연과학", "인문, 사회과학", "경영, 경제", "예술, 디자인", "기타"])}
+      ${radioQ("design_exp", "웹이나 앱 화면 디자인(UI, UX) 관련 수업을 듣거나 작업해 본 적이 있나요?", ["있음", "없음"])}
+      ${radioQ("genai_web_exp", "생성형 AI(ChatGPT, Claude 등)로 웹페이지나 앱 화면을 만들어 본 적이 있나요?", ["있음", "없음"])}
+      ${radioQ("plan_compare_exp", "최근 1년 안에 구독 서비스나 소프트웨어의 요금제를 직접 비교해 본 적이 있나요?", ["있음", "없음"])}
       <div class="err"></div><button class="primary" id="go">다음</button>`);
-    await waitValid(["age", "gender", "web", "ai"]);
-    send("pre", s, { age: val("age"), gender: val("gender"), web_freq: +val("web"), ai_freq: +val("ai") });
+    await waitValid(["age", "gender", "major", "design_exp", "genai_web_exp", "plan_compare_exp"]);
+    send("pre", s, { age: val("age"), gender: val("gender"), major: val("major"), design_exp: val("design_exp"), genai_web_exp: val("genai_web_exp"), plan_compare_exp: val("plan_compare_exp") });
 
     // 연습
     screen(`<h1>연습</h1>
@@ -286,7 +289,7 @@
       const svc = practice ? null : window.SERVICES[step.service];
       const show = (view) => {
         if (practice) stage.innerHTML = window.renderPracticeSub(view);
-        else stage.innerHTML = view === "main" ? window.renderCondition(step.service, step.condition) : window.renderSub(view, svc.brand);
+        else stage.innerHTML = view === "main" ? window.renderCondition(step.service, step.condition) : window.renderSub(view, svc.brand, step.service);
         stage.scrollTop = 0;
       };
       const tkey = (practice ? "practice-" : step.position + "-") + task.id;

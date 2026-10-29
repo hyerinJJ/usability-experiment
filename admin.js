@@ -171,7 +171,7 @@
           <div class="card"><div class="k">상태</div><div class="v" style="font-size:18px">${tagOf(p)}</div></div>
           <div class="card"><div class="k">소요 시간</div><div class="v" style="font-size:18px">${p.total_sec ? (p.total_sec / 60).toFixed(1) + "분" : "-"}</div></div>
           <div class="card"><div class="k">정답 과업</div><div class="v" style="font-size:18px">${ok} / ${T.length}</div></div>
-          <div class="card"><div class="k">사전 질문</div><div class="v" style="font-size:13px;font-weight:600;line-height:1.6">${esc(p.age || "-")}, ${esc(p.gender || "-")}<br>웹 ${esc(p.web_freq || "-")}/5, AI ${esc(p.ai_freq || "-")}/5</div></div>
+          <div class="card"><div class="k">사전 질문</div><div class="v" style="font-size:13px;font-weight:600;line-height:1.6">${esc(p.age || "-")}, ${esc(p.gender || "-")}, ${esc(p.major || "-")}<br>UI 경험 ${esc(p.design_exp || "-")}, AI로 화면 제작 ${esc(p.genai_web_exp || "-")}, 요금제 비교 ${esc(p.plan_compare_exp || "-")}</div></div>
         </div>
         ${positions.map((pos) => {
           const tt = T.filter((t) => +t.position === pos); const c = cond(pos); const a = ai(pos);
