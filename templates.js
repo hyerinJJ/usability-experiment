@@ -14,7 +14,7 @@
       <nav class="nav-links"><a href="#" data-nolink>기능</a><a href="#" data-nolink>사용 방법</a><a href="#" data-nolink>요금제</a><a href="#" data-nolink>FAQ</a><button class="nav-cta" data-go="trial">무료로 시작하기</button></nav>
     </header>`;
   const kicker = (t) => `<span class="kicker">${t}</span>`;
-  const ICONS = ["▦", "◷", "◎"];
+  const ICONS = ["▦", "◷", "◎", "◇", "✎", "⌁"];
   const heroTitle = (t) => {
     const w = String(t).split(" ");
     const k = Math.max(1, Math.min(2, w.length - 2));
@@ -73,19 +73,22 @@
     </div></section>`;
   const footer = (brand) => `<footer class="footer"><span class="brand"><span class="brand-mark">↗</span>${esc(brand)}</span><span>© 2026 ${esc(brand)}. 가상의 서비스입니다.</span></footer>`;
 
-  // ---------- AI 전형형: 원본 구조(E2 균일한 3열 카드, E3 섹션 간 동일 여백, E4 가운데 제목 + 같은 카드 그리드를 모든 섹션에 반복)
+  // ---------- AI 전형형: 원본 구조(E2 균일한 카드 그리드, E3 섹션 간 동일 여백, E4 가운데 제목 + 같은 카드 그리드를 모든 섹션에 반복)
   function renderAI(svc, c) {
     const head = (k, h, p) => `<div class="section-head">${kicker(k)}<h2>${esc(h)}</h2><p>${esc(p)}</p></div>`;
+    const P = c.pricing;
     return `
       <div class="page ai" style="--blue:${ACCENT[svc.key]}">
         ${nav(svc.brand)}
         ${hero(svc, c)}
         <section class="section" id="features">${head("핵심 기능", c.features.heading, c.features.lead)}
-          <div class="features">${c.features.items.map((f, i) => `<article class="feature"><div class="feature-icon">${ICONS[i]}</div><h3>${esc(f.title)}</h3><p>${esc(f.body)}</p></article>`).join("")}</div></section>
+          <div class="features">${c.features.items.map((f, i) => `<article class="feature"><div class="feature-icon">${ICONS[i % 6]}</div><h3>${esc(f.title)}</h3><p>${esc(f.body)}</p></article>`).join("")}</div></section>
         <section class="section how" id="how">${head("작동 방식", c.steps.heading, c.steps.lead)}
           <div class="steps">${c.steps.items.map((s, i) => `<article class="feature"><div class="feature-icon step-no">0${i + 1}</div><h3>${esc(s.title)}</h3><p>${esc(s.body)}</p></article>`).join("")}</div></section>
-        <section class="section" id="pricing">${head("요금제", c.pricing.heading, c.pricing.lead)}
-          <div class="pricing">${c.pricing.plans.map((p) => `<article class="price-card"><h3>${esc(p.name)}</h3><p class="plan-copy">${esc(p.label)}</p><p class="plan-body">${esc(p.body)}</p><button class="plan-btn" data-go="trial">시작하기</button></article>`).join("")}</div></section>
+        <section class="section" id="pricing">${head("요금제", P.heading, P.lead)}
+          <div class="pricing">${P.plans.map((p) => `<article class="price-card"><h3>${esc(p.name)}</h3><p class="plan-copy">${esc(p.label)}</p><p class="plan-body">${esc(p.body)}</p>
+            <ul class="plan-list">${p.limits.map((l) => `<li>${esc(l)}</li>`).join("")}${P.featNames.map((n, i) => (p.flags[i] ? `<li>${esc(n)}</li>` : "")).join("")}</ul>
+            <button class="plan-btn" data-go="trial">시작하기</button></article>`).join("")}</div></section>
         <section class="section faq" id="faq">${head("FAQ", c.faq.heading, c.faq.lead)}
           <div class="faqs">${c.faq.items.map((i) => `<article class="feature"><div class="feature-icon">?</div><h3>${esc(i.q)}</h3><p>${esc(i.a)}</p></article>`).join("")}</div></section>
         ${cta(c)}
@@ -93,36 +96,42 @@
       </div>`;
   }
 
-  // ---------- 위계 설계형: 같은 스타일, 배치만 위계 원칙으로
-  //  E2 -> 중요도에 따라 카드 크기 차등, E3 -> 묶음 안 간격 < 묶음 사이 간격, E4 -> 내용에 맞는 형식(비교표, 목록), 왼쪽 정렬로 읽기 시작점 고정
+  // ---------- 위계 설계형: 같은 스타일, 배치는 위계 원칙과 가독성 기준으로
+  //  E2 -> 중요도에 따라 크기 차등(주요 기능 2개는 크게, 나머지는 목록), E3 -> 묶음 안 간격 < 묶음 사이 간격(FAQ는 주제별로 묶음),
+  //  E4 -> 내용에 맞는 형식(요금은 항목별 비교표, 절차는 번호 목록), 왼쪽 정렬로 읽기 시작점 고정
   function renderH(svc, c) {
-    // 섹션마다 왼쪽에 제목, 오른쪽에 내용(편집형 2단). 카드 장식 대신 글자 크기와 선으로 위계를 만든다.
     const row = (id, k, h, p, body, cls = "") => `
         <section class="hi-row ${cls}" id="${id}">
           <div class="hi-label">${kicker(k)}<h2>${esc(h)}</h2><p>${esc(p)}</p></div>
           <div class="hi-body">${body}</div>
         </section>`;
-    const f = c.features.items;
+    const f = c.features.items, P = c.pricing, Q = c.faq;
+    const yes = '<span class="yes" aria-label="포함">✓</span>', no = '<span class="no" aria-label="미포함">없음</span>';
     return `
       <div class="page hi" style="--blue:${ACCENT[svc.key]}">
         ${nav(svc.brand)}
         ${hero(svc, c)}
         ${row("features", "핵심 기능", c.features.heading, c.features.lead, `
-          <div class="hi-lead-feat"><span class="hi-n">01</span><h3>${esc(f[0].title)}</h3><p>${esc(f[0].body)}</p></div>
-          <div class="hi-sub-feats">${f.slice(1).map((x, i) => `<div><span class="hi-n">0${i + 2}</span><h3>${esc(x.title)}</h3><p>${esc(x.body)}</p></div>`).join("")}</div>`)}
+          <div class="hi-lead-feats">${f.slice(0, 2).map((x, i) => `<div><span class="hi-n">0${i + 1}</span><h3>${esc(x.title)}</h3><p>${esc(x.body)}</p></div>`).join("")}</div>
+          <div class="hi-sub-feats">${f.slice(2).map((x, i) => `<div><span class="hi-n">0${i + 3}</span><h3>${esc(x.title)}</h3><p>${esc(x.body)}</p></div>`).join("")}</div>`)}
         ${row("how", "작동 방식", c.steps.heading, c.steps.lead, `
           <ol class="hi-steps">${c.steps.items.map((s, i) => `<li><span class="hi-n">${i + 1}</span><b>${esc(s.title)}</b><span>${esc(s.body)}</span></li>`).join("")}</ol>`, "tight")}
-        ${row("pricing", "요금제", c.pricing.heading, c.pricing.lead, `
+        ${row("pricing", "요금제", P.heading, P.lead, `
           <table class="hi-table">
-            <thead><tr>${c.pricing.plans.map((p) => `<th>${esc(p.name)}</th>`).join("")}</tr></thead>
+            <thead><tr><th></th>${P.plans.map((p) => `<th>${esc(p.name)}</th>`).join("")}</tr></thead>
             <tbody>
-              <tr class="key">${c.pricing.plans.map((p) => `<td>${esc(p.label)}</td>`).join("")}</tr>
-              <tr>${c.pricing.plans.map((p) => `<td>${esc(p.body)}</td>`).join("")}</tr>
-              <tr class="act">${c.pricing.plans.map(() => `<td><button class="hi-link" data-go="trial">시작하기 →</button></td>`).join("")}</tr>
+              <tr class="key"><th>월 요금</th>${P.plans.map((p) => `<td>${esc(p.label)}</td>`).join("")}</tr>
+              <tr class="desc"><th></th>${P.plans.map((p) => `<td>${esc(p.body)}</td>`).join("")}</tr>
+              <tr class="grp"><th colspan="${P.plans.length + 1}">사용 한도</th></tr>
+              ${P.limitNames.map((n, i) => `<tr><th>${esc(n)}</th>${P.plans.map((p) => `<td class="lim">${esc(p.limits[i])}</td>`).join("")}</tr>`).join("")}
+              <tr class="grp"><th colspan="${P.plans.length + 1}">포함 기능</th></tr>
+              ${P.featNames.map((n, i) => `<tr><th>${esc(n)}</th>${P.plans.map((p) => `<td>${p.flags[i] ? yes : no}</td>`).join("")}</tr>`).join("")}
+              <tr class="act"><th></th>${P.plans.map(() => `<td><button class="hi-link" data-go="trial">시작하기 →</button></td>`).join("")}</tr>
             </tbody>
           </table>`)}
-        ${row("faq", "FAQ", c.faq.heading, c.faq.lead, `
-          <dl class="hi-faq">${c.faq.items.map((i) => `<div><dt>${esc(i.q)}</dt><dd>${esc(i.a)}</dd></div>`).join("")}</dl>`)}
+        ${row("faq", "FAQ", Q.heading, Q.lead, Q.groups.map((g, gi) => `
+          <div class="hi-faq-group"><p class="hi-group">${esc(Q.groupNames[gi])}</p>
+          <dl class="hi-faq">${g.map((i) => `<div><dt>${esc(Q.items[i].q)}</dt><dd>${esc(Q.items[i].a)}</dd></div>`).join("")}</dl></div>`).join(""))}
         ${cta(c)}
         ${footer(svc.brand)}
       </div>`;
