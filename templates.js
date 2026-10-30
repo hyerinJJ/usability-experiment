@@ -10,7 +10,7 @@
   // ---------- 두 조건 공통 요소(원본 페이지 그대로)
   const nav = (brand) => `
     <header class="nav">
-      <span class="brand"><span class="brand-mark">↗</span><span class="brand-init">${esc(String(brand)[0])}</span>${esc(brand)}</span>
+      <span class="brand"><span class="brand-mark">↗</span>${esc(brand)}</span>
       <nav class="nav-links"><a href="#" data-nolink>기능</a><a href="#" data-nolink>사용 방법</a><a href="#" data-nolink>요금제</a><a href="#" data-nolink>FAQ</a><a class="nav-cta" href="#" data-nolink>로그인</a></nav>
     </header>`;
   const kicker = (t) => `<span class="kicker">${t}</span>`;
@@ -58,7 +58,7 @@
         <div class="hero-actions"><button class="btn" data-go="contact">${esc(c.cta.actions[1].name)} <span>→</span></button><a class="text-link" href="#" data-nolink>기능 살펴보기 ↓</a></div>
         <p class="microcopy">가입은 1분이면 충분합니다.</p>
       </div>
-      ${mockup(svc.key, svc.brand)}
+      <div class="hero-visual">${mockup(svc.key, svc.brand)}</div>
     </div></section>`;
 
   // 마지막 신청 영역(T3 목표인 데모 신청은 여기에만 있다)
@@ -79,7 +79,7 @@
         <div class="cta-secondary">${c.cta.actions.slice(1).map((a) => `<button class="choice-btn" data-go="${a.go}"><b>${a.name}</b><span>${a.desc}</span></button>`).join("")}</div>
       </div>
     </div></section>`;
-  const footer = (brand) => `<footer class="footer"><span class="brand"><span class="brand-mark">↗</span><span class="brand-init">${esc(String(brand)[0])}</span>${esc(brand)}</span><span>© 2026 ${esc(brand)}. 가상의 서비스입니다.</span></footer>`;
+  const footer = (brand) => `<footer class="footer"><span class="brand"><span class="brand-mark">↗</span>${esc(brand)}</span><span>© 2026 ${esc(brand)}. 가상의 서비스입니다.</span></footer>`;
 
   // ---------- AI 전형형: 원본 구조(E2 균일한 카드 그리드, E3 섹션 간 동일 여백, E4 가운데 제목 + 같은 카드 그리드를 모든 섹션에 반복)
   function renderAI(svc, c) {
