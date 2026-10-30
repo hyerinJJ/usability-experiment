@@ -18,7 +18,7 @@
   const heroTitle = (t) => {
     const w = String(t).split(" ");
     const k = Math.max(1, Math.min(2, w.length - 2));
-    return `${esc(w.slice(0, -k).join(" "))}<br><em>${esc(w.slice(-k).join(" "))}</em>`;
+    return `${esc(w.slice(0, -k).join(" "))} <br><em>${esc(w.slice(-k).join(" "))}</em>`;
   };
 
   // 서비스별 제품 화면 목업(과업 정답과 관계없는 장식용 내용)

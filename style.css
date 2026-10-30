@@ -210,8 +210,8 @@ h3{margin:0}
 .screen .recall-item { display:grid; grid-template-columns:220px 1fr; gap:20px; align-items:center; }
 .screen .recall-item .rlabel { font-weight:700; color:var(--ink); margin-bottom:6px; }
 .screen .recall-item .likert { flex-wrap:wrap; gap:10px; }
-.thumb { width:220px; height:130px; flex:none; overflow:hidden; border:1px solid var(--line); border-radius:10px; background:#fff; position:relative; }
-.thumb-in { width:1440px; transform:scale(.1528); transform-origin:0 0; pointer-events:none; }
+.thumb { width:200px; height:380px; flex:none; overflow:hidden; border:1px solid var(--line); border-radius:10px; background:#fff; position:relative; }
+.thumb-in { width:1440px; transform:scale(.1389); transform-origin:0 0; pointer-events:none; }
 .hi .hi-body p.hi-group{max-width:none}
 
 /* 행동 선택지(T3) */
@@ -260,3 +260,27 @@ h3{margin:0}
 .pr-table thead th span{display:block;font-weight:400;color:var(--muted);font-size:13px;margin-top:2px}
 .pr-table tr.grp td{text-align:left;background:#f4f6f9;font-weight:700;font-size:13px}
 .pr-q{border-top:1px solid var(--line);padding:16px 0}.pr-q h3{font-size:16px;margin:0 0 6px}.pr-q p{color:var(--muted);margin:0}
+
+/* 위계 설계형 첫 화면과 장식: 생성형 AI 페이지의 전형 장식(그라데이션 배경, 원형 장식, 알약 라벨, 강조색 단어, 기울어진 목업, 떠 있는 카드, 그림자)을 걷어 낸다 */
+.hi .nav{border-bottom:1px solid var(--line)}
+.hi .brand-mark{display:none}
+.hi .brand{font-size:20px;letter-spacing:-.4px}
+.hi .nav-links{color:var(--txt);font-size:15px}
+.hi .nav-cta{background:#fff;color:var(--ink);border:1px solid var(--ink);box-shadow:none;border-radius:4px}
+.hi .hero{background:#fff;padding:72px 0 80px;border-bottom:1px solid var(--line)}
+.hi .hero:before,.hi .hero:after{display:none}
+.hi .hero-grid{grid-template-columns:1.05fr 1fr;gap:64px;align-items:start}
+.hi .eyebrow{background:none;padding:0;border-radius:0;color:var(--sub);font-size:15px;font-weight:700;letter-spacing:0}
+.hi .eyebrow i{display:none}
+.hi .hero h1{font-size:48px;line-height:1.25;letter-spacing:-1.6px;margin:14px 0 20px}
+.hi .hero h1 em{color:inherit}
+.hi .hero h1 br{display:none}
+.hi .hero-copy{max-width:34em;color:var(--txt);font-size:18px;line-height:1.7}
+.hi .btn{border-radius:4px;box-shadow:none;padding:14px 22px;min-height:48px;font-size:16px}
+.hi .text-link{color:var(--ink);font-size:16px;text-decoration:underline;text-underline-offset:4px}
+.hi .microcopy{font-size:14px;color:var(--sub)}
+.hi .app-frame{transform:none;box-shadow:none;border:1px solid #cfd6e2;border-radius:6px;margin-top:8px}
+.hi .float-note{display:none}
+.hi .feature-icon{display:none}
+/* 요금표: 가격이 들어 있는 설명 줄도 본문과 같은 진한 색, 16px로(가독성 기준) */
+.hi .hi-table tr.desc td{font-size:16px;color:var(--txt);line-height:1.6}
