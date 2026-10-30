@@ -11,7 +11,7 @@
   const nav = (brand) => `
     <header class="nav">
       <span class="brand"><span class="brand-mark">↗</span>${esc(brand)}</span>
-      <nav class="nav-links"><a href="#" data-nolink>기능</a><a href="#" data-nolink>사용 방법</a><a href="#" data-nolink>요금제</a><a href="#" data-nolink>FAQ</a><button class="nav-cta" data-go="trial">무료로 시작하기</button></nav>
+      <nav class="nav-links"><a href="#" data-nolink>기능</a><a href="#" data-nolink>사용 방법</a><a href="#" data-nolink>요금제</a><a href="#" data-nolink>FAQ</a><a class="nav-cta" href="#" data-nolink>로그인</a></nav>
     </header>`;
   const kicker = (t) => `<span class="kicker">${t}</span>`;
   const ICONS = ["▦", "◷", "◎", "◇", "✎", "⌁"];
@@ -55,14 +55,14 @@
         <span class="eyebrow"><i></i> ${esc(svc.category)}</span>
         <h1>${heroTitle(c.hero.title)}</h1>
         <p class="hero-copy">${esc(c.hero.body)}</p>
-        <div class="hero-actions"><button class="btn" data-go="trial">무료 체험 <span>→</span></button><button class="text-link" data-go="contact">상담 문의</button></div>
+        <div class="hero-actions"><button class="btn" data-go="contact">상담 문의 <span>→</span></button><a class="text-link" href="#" data-nolink>기능 살펴보기 ↓</a></div>
         <p class="microcopy">가입은 1분이면 충분합니다.</p>
       </div>
       ${mockup(svc.key, svc.brand)}
     </div></section>`;
 
   // 마지막 신청 영역(T3 목표인 데모 신청은 여기에만 있다)
-  // 행동 선택지: 이름과 설명 문장은 두 조건이 같고, 배치와 위계만 다르다(T3 목표는 데모 신청)
+  // 행동 선택지: 이름과 설명 문장은 두 조건이 같고, 배치와 위계만 다르다(T3 목표는 주 행동인 무료 체험)
   const ACTIONS = [
     { go: "trial", name: "무료 체험", desc: "가입하고 바로 직접 써 봅니다." },
     { go: "contact", name: "상담 문의", desc: "요금과 도입 조건을 담당자와 이야기합니다." },
@@ -74,14 +74,13 @@
       <div class="section-head">${kicker("시작하기")}<h2>${esc(c.cta.heading)}</h2><p>${esc(c.cta.body)}</p></div>
       <div class="actions">${ACTIONS.map((a, i) => `<article class="feature"><div class="feature-icon">${["→", "☏", "▶"][i]}</div><h3>${a.name}</h3><p>${a.desc}</p><button class="plan-btn" data-go="${a.go}">${a.name}</button></article>`).join("")}</div>
     </section>`;
-  // 위계 설계형: 주 행동은 크게, 보조 행동은 설명과 함께 목록으로(E2), 데모 신청은 작동 방식 옆에도 둔다(E3 근접성)
+  // 위계 설계형: 주 행동(무료 체험)은 크게, 보조 행동은 설명과 함께 작은 목록으로(E2)
   const ctaH = (c) => `
     <section class="cta"><div class="cta-box">
       <div class="cta-copy">${kicker("시작하기")}<h2>${esc(c.cta.heading)}</h2><p>${esc(c.cta.body)}</p>
         <button class="btn cta-main" data-go="trial">무료 체험 →</button><p class="cta-main-desc">${ACTIONS[0].desc}</p></div>
       <div class="signup">${ACTIONS.slice(1).map((a) => `<button class="choice-btn" data-go="${a.go}"><b>${a.name}</b><span>${a.desc}</span></button>`).join("")}</div>
     </div></section>`;
-  const demoInline = () => `<div class="hi-inline-cta"><div><b>직접 보고 결정하고 싶다면</b><span>${ACTIONS[2].desc}</span></div><button class="btn-ghost" data-go="demo">데모 신청 →</button></div>`;
   const footer = (brand) => `<footer class="footer"><span class="brand"><span class="brand-mark">↗</span>${esc(brand)}</span><span>© 2026 ${esc(brand)}. 가상의 서비스입니다.</span></footer>`;
 
   // ---------- AI 전형형: 원본 구조(E2 균일한 카드 그리드, E3 섹션 간 동일 여백, E4 가운데 제목 + 같은 카드 그리드를 모든 섹션에 반복)
@@ -99,7 +98,7 @@
         <section class="section" id="pricing">${head("요금제", P.heading, P.lead)}
           <div class="pricing">${P.plans.map((p) => `<article class="price-card"><h3>${esc(p.name)}</h3><p class="plan-copy">${esc(p.label)}</p><p class="plan-body">${esc(p.body)}</p>
             <ul class="plan-list">${p.limits.map((l) => `<li>${esc(l)}</li>`).join("")}${P.featNames.map((n, i) => (p.flags[i] ? `<li>${esc(n)}</li>` : "")).join("")}</ul>
-            <button class="plan-btn" data-go="trial">시작하기</button></article>`).join("")}</div></section>
+            <button class="plan-btn" data-go="plan">시작하기</button></article>`).join("")}</div></section>
         <section class="section faq" id="faq">${head("FAQ", c.faq.heading, c.faq.lead)}
           <div class="faqs">${c.faq.items.map((i) => `<article class="feature"><div class="feature-icon">?</div><h3>${esc(i.q)}</h3><p>${esc(i.a)}</p></article>`).join("")}</div></section>
         ${ctaAI(c)}
@@ -126,7 +125,7 @@
           <div class="hi-lead-feats">${f.slice(0, 2).map((x, i) => `<div><span class="hi-n">0${i + 1}</span><h3>${esc(x.title)}</h3><p>${esc(x.body)}</p></div>`).join("")}</div>
           <div class="hi-sub-feats">${f.slice(2).map((x, i) => `<div><span class="hi-n">0${i + 3}</span><h3>${esc(x.title)}</h3><p>${esc(x.body)}</p></div>`).join("")}</div>`)}
         ${row("how", "작동 방식", c.steps.heading, c.steps.lead, `
-          <ol class="hi-steps">${c.steps.items.map((s, i) => `<li><span class="hi-n">${i + 1}</span><b>${esc(s.title)}</b><span>${esc(s.body)}</span></li>`).join("")}</ol>${demoInline()}`, "tight")}
+          <ol class="hi-steps">${c.steps.items.map((s, i) => `<li><span class="hi-n">${i + 1}</span><b>${esc(s.title)}</b><span>${esc(s.body)}</span></li>`).join("")}</ol>`, "tight")}
         ${row("pricing", "요금제", P.heading, P.lead, `
           <table class="hi-table">
             <thead><tr><th></th>${P.plans.map((p) => `<th>${esc(p.name)}</th>`).join("")}</tr></thead>
@@ -137,7 +136,7 @@
               ${P.limitNames.map((n, i) => `<tr><th>${esc(n)}</th>${P.plans.map((p) => `<td class="lim">${esc(p.limits[i])}</td>`).join("")}</tr>`).join("")}
               <tr class="grp"><th colspan="${P.plans.length + 1}">포함 기능</th></tr>
               ${P.featNames.map((n, i) => `<tr><th>${esc(n)}</th>${P.plans.map((p) => `<td>${p.flags[i] ? yes : no}</td>`).join("")}</tr>`).join("")}
-              <tr class="act"><th></th>${P.plans.map(() => `<td><button class="hi-link" data-go="trial">시작하기 →</button></td>`).join("")}</tr>
+              <tr class="act"><th></th>${P.plans.map(() => `<td><button class="hi-link" data-go="plan">시작하기 →</button></td>`).join("")}</tr>
             </tbody>
           </table>`)}
         ${row("faq", "FAQ", Q.heading, Q.lead, Q.groups.map((g, gi) => `
@@ -148,11 +147,12 @@
       </div>`;
   }
 
-  // 버튼을 누르면 열리는 하위 화면(데모 신청은 T3의 목표)
+  // 버튼을 누르면 열리는 하위 화면(무료 체험이 T3의 목표)
   const SUBPAGES = {
     trial: { title: "무료 체험 시작", body: "이메일로 가입하면 체험이 시작됩니다." },
     contact: { title: "상담 문의", body: "담당자가 영업일 기준 1일 안에 연락드립니다." },
-    demo: { title: "데모 신청", body: "원하는 날짜를 고르면 화면 공유로 데모를 진행합니다." }
+    demo: { title: "데모 신청", body: "원하는 날짜를 고르면 화면 공유로 데모를 진행합니다." },
+    plan: { title: "요금제 선택", body: "요금제를 고르면 결제 정보를 입력하는 화면으로 넘어갑니다." }
   };
   function renderSub(key, brand, svcKey) {
     const p = SUBPAGES[key];
