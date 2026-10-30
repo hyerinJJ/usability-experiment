@@ -96,37 +96,43 @@ h3{margin:0}
 .ai .plan-btn{margin-top:18px}
 .ai .faq{background:var(--pale)}
 
-/* 위계 설계형: 같은 색, 글꼴, 첫 화면, 목업, 신청 영역. 본문은 왼쪽 제목 + 오른쪽 내용의 편집형 2단,
-   카드와 아이콘 장식 없이 글자 크기, 굵기, 선으로 중요도를 구분하고 섹션마다 간격을 다르게 둔다 */
-.hi .hi-row{display:grid;grid-template-columns:300px 1fr;gap:64px;padding:56px 0 120px;border-top:1px solid var(--ink)}
-.hi #features{margin-top:104px}
-.hi .hi-row.tight{padding:40px 0 72px}
-.hi .hi-label h2{font-size:30px;line-height:1.25;letter-spacing:-1px;margin:8px 0 10px}
-.hi .hi-label p{font-size:14px;color:var(--muted);line-height:1.7}
-.hi .hi-n{display:block;font-size:12px;font-weight:800;color:var(--blue);letter-spacing:.06em;margin-bottom:8px}
+/* 위계 설계형: 같은 색, 글꼴, 첫 화면, 목업, 신청 영역을 쓰고, 본문에는 가독성 원칙을 적용한다
+   - 시각적 위계: 제목 32 > 핵심 항목 28 > 소제목 20 > 본문 16px, 굵기 차이로 중요도 구분(E2 대응)
+   - 근접성: 묶음 안 간격(8~16px)보다 묶음 사이 간격(112px)을 크게(E3 대응)
+   - 내용에 맞는 형식: 비교는 표, 절차는 번호 목록, 질문은 목록(E4 대응)
+   - 가독성: 본문 16px 이상, 줄 간격 1.7, 한 줄 60자 안팎, 본문 대비 7:1 이상, 왼쪽 정렬로 읽기 시작점 고정
+   - 조작 대상은 44px 이상 */
+.hi{--txt:#263244;--sub:#46536a}
+.hi .hi-row{display:grid;grid-template-columns:280px 1fr;gap:56px;padding:48px 0 112px;border-top:2px solid var(--ink)}
+.hi #features{margin-top:96px}
+.hi .hi-row.tight{padding:40px 0 88px}
+.hi .hi-label h2{font-size:32px;line-height:1.3;letter-spacing:-1px;margin:8px 0 10px;color:var(--ink)}
+.hi .hi-label p{font-size:16px;color:var(--sub);line-height:1.7}
+.hi .hi-body p,.hi .hi-body dd,.hi .hi-body span{max-width:60ch}
+.hi .hi-n{display:block;font-size:13px;font-weight:800;color:var(--blue);letter-spacing:.06em;margin-bottom:8px}
 .hi .hi-lead-feat{padding-bottom:32px;border-bottom:1px solid var(--line)}
-.hi .hi-lead-feat h3{font-size:34px;letter-spacing:-1.3px;line-height:1.2;margin-bottom:12px}
-.hi .hi-lead-feat p{font-size:17px;color:#44516b;max-width:560px;line-height:1.7}
+.hi .hi-lead-feat h3{font-size:28px;letter-spacing:-.9px;line-height:1.3;margin-bottom:10px;color:var(--ink)}
+.hi .hi-lead-feat p{font-size:17px;color:var(--txt);line-height:1.7}
 .hi .hi-sub-feats{display:grid;grid-template-columns:1fr 1fr;gap:40px;padding-top:28px}
-.hi .hi-sub-feats h3{font-size:18px;letter-spacing:-.4px;margin-bottom:6px}
-.hi .hi-sub-feats p{font-size:14px;color:var(--muted);line-height:1.7}
-.hi .hi-steps{list-style:none;margin:0;padding:0;display:grid;gap:0}
-.hi .hi-steps li{display:grid;grid-template-columns:40px 180px 1fr;align-items:baseline;padding:14px 0;border-bottom:1px solid var(--line)}
-.hi .hi-steps .hi-n{margin:0;font-size:14px}
-.hi .hi-steps b{font-size:16px}
-.hi .hi-steps span:last-child{font-size:14px;color:var(--muted)}
-.hi .hi-table{width:100%;border-collapse:collapse}
-.hi .hi-table th,.hi .hi-table td{padding:14px 18px 14px 0;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
-.hi .hi-table thead th{font-size:15px;font-weight:700;color:var(--muted);border-bottom:2px solid var(--ink)}
-.hi .hi-table tr.key td{font-size:24px;font-weight:800;color:var(--ink);letter-spacing:-.6px;line-height:1.35;padding:20px 18px 20px 0}
-.hi .hi-table td{font-size:14px;color:var(--muted)}
+.hi .hi-sub-feats h3{font-size:20px;letter-spacing:-.4px;line-height:1.35;margin-bottom:8px;color:var(--ink)}
+.hi .hi-sub-feats p{font-size:16px;color:var(--txt);line-height:1.7}
+.hi .hi-steps{list-style:none;margin:0;padding:0;display:grid}
+.hi .hi-steps li{display:grid;grid-template-columns:44px 260px 1fr;align-items:baseline;gap:8px;padding:16px 0;border-bottom:1px solid var(--line)}
+.hi .hi-steps .hi-n{margin:0;font-size:16px}
+.hi .hi-steps b{font-size:17px;color:var(--ink)}
+.hi .hi-steps span:last-child{font-size:16px;color:var(--txt);line-height:1.6}
+.hi .hi-table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+.hi .hi-table th,.hi .hi-table td{padding:16px 20px 16px 0;text-align:left;vertical-align:top;border-bottom:1px solid var(--line);width:33.3%}
+.hi .hi-table thead th{font-size:18px;font-weight:800;color:var(--ink);border-bottom:2px solid var(--ink)}
+.hi .hi-table tr.key td{font-size:22px;font-weight:800;color:var(--ink);letter-spacing:-.4px;line-height:1.4;padding:20px 20px 20px 0}
+.hi .hi-table td{font-size:16px;color:var(--txt);line-height:1.6}
 .hi .hi-table tr.act td{border-bottom:0}
-.hi .hi-link{background:none;border:0;padding:0;font-weight:800;color:var(--blue);font-size:14px}
+.hi .hi-link{background:none;border:0;padding:12px 0;min-height:44px;font-weight:800;color:var(--blue);font-size:16px}
 .hi .hi-faq{margin:0}
-.hi .hi-faq div{padding:18px 0;border-bottom:1px solid var(--line)}
+.hi .hi-faq div{padding:20px 0;border-bottom:1px solid var(--line)}
 .hi .hi-faq div:first-child{padding-top:0}
-.hi .hi-faq dt{font-weight:800;font-size:20px;letter-spacing:-.4px;color:var(--ink)}
-.hi .hi-faq dd{margin:6px 0 0;color:var(--muted);font-size:15px}
+.hi .hi-faq dt{font-weight:800;font-size:20px;letter-spacing:-.4px;line-height:1.4;color:var(--ink)}
+.hi .hi-faq dd{margin:8px 0 0;color:var(--txt);font-size:16px;line-height:1.7}
 .hi .cta{padding-top:24px}
 
 /* 하위 화면, 연습 */
