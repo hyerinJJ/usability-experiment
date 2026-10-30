@@ -108,9 +108,10 @@
   //  E2 -> 중요도에 따라 크기 차등(주요 기능 2개는 크게, 나머지는 목록), E3 -> 묶음 안 간격 < 묶음 사이 간격(FAQ는 주제별로 묶음),
   //  E4 -> 내용에 맞는 형식(요금은 항목별 비교표, 절차는 번호 목록), 왼쪽 정렬로 읽기 시작점 고정
   function renderH(svc, c) {
+    let secNo = 0;
     const row = (id, k, h, p, body, cls = "") => `
         <section class="hi-row ${cls}" id="${id}">
-          <div class="hi-label">${kicker(k)}<h2>${esc(h)}</h2><p>${esc(p)}</p></div>
+          <div class="hi-label"><span class="hi-secno">0${++secNo}</span>${kicker(k)}<h2>${esc(h)}</h2><p>${esc(p)}</p></div>
           <div class="hi-body">${body}</div>
         </section>`;
     const f = c.features.items, P = c.pricing, Q = c.faq;
@@ -140,7 +141,11 @@
         ${row("faq", "FAQ", Q.heading, Q.lead, Q.groups.map((g, gi) => `
           <div class="hi-faq-group"><p class="hi-group">${esc(Q.groupNames[gi])}</p>
           <dl class="hi-faq">${g.map((i) => `<div><dt>${esc(Q.items[i].q)}</dt><dd>${esc(Q.items[i].a)}</dd></div>`).join("")}</dl></div>`).join(""))}
-        ${ctaH(c)}
+        ${row("start", "시작하기", c.cta.heading, c.cta.body, `
+          <div class="cta-actions">
+            <div class="cta-primary"><b>${c.cta.actions[0].name}</b><p>${c.cta.actions[0].desc}</p><button class="btn cta-main" data-go="trial">${c.cta.actions[0].name} →</button></div>
+            <div class="cta-secondary">${c.cta.actions.slice(1).map((a) => `<button class="choice-btn" data-go="${a.go}"><b>${a.name}</b><span>${a.desc}</span></button>`).join("")}</div>
+          </div>`)}
         ${footer(svc.brand)}
       </div>`;
   }

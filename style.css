@@ -264,36 +264,60 @@ h3{margin:0}
 /* 요금표: 가격이 들어 있는 설명 줄도 본문과 같은 진한 색, 16px로(가독성 기준) */
 .hi .hi-table tr.desc td{font-size:16px;color:var(--txt);line-height:1.6}
 
-/* 위계 설계형 첫 화면과 마감(참고: 토스페이먼츠, 채널톡, Stripe, Linear의 소개 페이지)
-   두 조건 공통으로 유지: 메뉴, 로고, 글꼴, 서비스 색, 문구, 목업 내용, 버튼 모양, 회색 섹션 배경(사용 방법, FAQ), 카드 테두리와 모서리
-   위계 설계형에서만 걷어 내는 것: 생성형 AI 페이지에 흔한 장식(그라데이션 배경, 원형 장식, 알약 라벨, 제목 끝 단어 색칠, 기울어진 목업, 떠 있는 작은 카드) */
-.hi .hero{background:#fff;padding:72px 0 88px}
+/* 위계 설계형: 위계만으로 정보를 정리한다(강도 최대)
+   - 글자 크기 5단계: 첫 화면 제목 56 > 섹션 제목 36 > 묶음 제목 24 > 항목 제목 18 > 본문 16px, 단계가 내려갈수록 굵기와 진하기도 낮춘다
+   - 선 굵기 3단계: 섹션 4px > 묶음 2px > 항목 1px
+   - 간격 3단계: 섹션 사이 128px > 묶음 사이 48px > 항목 사이 20px
+   - 모든 섹션이 같은 2열 격자(왼쪽 섹션 번호와 제목, 오른쪽 내용)를 쓰고, 섹션 제목은 내용을 읽는 동안 왼쪽에 고정된다
+   - 장식 없음: 배경색 면, 카드, 그림자, 아이콘, 그라데이션, 기울어진 목업, 떠 있는 카드를 모두 뺀다
+   - 메뉴, 로고, 글꼴, 서비스 색, 문구, 목업 내용, 버튼은 AI 전형형과 같다 */
+.hi .hero{background:#fff;padding:80px 0 24px}
 .hi .hero:before,.hi .hero:after{display:none}
-.hi .hero-grid{grid-template-columns:1fr 1.12fr;gap:56px;align-items:center}
-.hi .eyebrow{background:none;padding:0;border-radius:0;font-size:15px;letter-spacing:0}
+.hi .hero-grid{grid-template-columns:1fr 1fr;gap:64px;align-items:start}
+.hi .eyebrow{background:none;padding:0;border-radius:0;font-size:16px;letter-spacing:0;color:var(--blue)}
 .hi .eyebrow i{display:none}
-.hi .hero h1{font-size:50px;line-height:1.24;letter-spacing:-1.8px;margin:14px 0 20px}
+.hi .hero h1{font-size:56px;line-height:1.2;letter-spacing:-2px;margin:12px 0 24px}
 .hi .hero h1 em{color:inherit}
 .hi .hero h1 br{display:none}
-.hi .hero-copy{max-width:32em;color:var(--txt);font-size:18px;line-height:1.7}
+.hi .hero-copy{max-width:32em;color:var(--txt);font-size:18px;line-height:1.7;margin-bottom:32px}
 .hi .text-link{font-size:16px;color:var(--ink)}
 .hi .microcopy{font-size:14px;color:var(--sub)}
-.hi .hero-visual{background:var(--tint);border-radius:24px;padding:40px 36px}
-.hi .app-frame{transform:none;box-shadow:0 18px 40px -22px rgba(23,36,59,.35)}
+.hi .app-frame{transform:none;box-shadow:none;border:1px solid #cfd6e2;border-radius:8px;margin-top:8px}
 .hi .float-note{display:none}
-.hi .hi-row{border-top:0;padding:88px 0 96px}
-.hi #features{margin-top:0}
-.hi .hi-row.tight{padding:80px 0 88px}
-.hi #how,.hi #faq{background:var(--pale);box-shadow:0 0 0 100vmax var(--pale);clip-path:inset(0 -100vmax)}
-.hi .kicker{font-size:14px;letter-spacing:.02em}
-.hi .hi-label h2{font-size:30px}
-.hi .hi-lead-feats>div{border-top:3px solid var(--blue);padding-top:20px}
-.hi .hi-steps li{align-items:center}
-.hi .hi-steps .hi-n{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--blue);color:#fff;font-size:14px}
-.hi #pricing .hi-body{background:#fff;border:1px solid var(--line);border-radius:17px;padding:4px 28px 8px}
-.hi .hi-table thead th{padding-top:18px}
-.hi .hi-table tr.grp th{border-bottom:1px solid #cfd5df}
-.hi .hi-faq-group{background:#fff;border:1px solid var(--line);border-radius:17px;padding:18px 28px 8px}
-.hi .hi-group{border-bottom:0;margin-bottom:0}
-.hi .hi-faq div:last-child{border-bottom:0}
-.hi .cta{padding:88px 0}
+.hi .hi-row{display:grid;grid-template-columns:300px 1fr;gap:64px;border-top:0;padding:56px 0 128px;margin:0}
+.hi .hi-row+.hi-row,.hi .hero+.hi-row{border-top:4px solid var(--ink)}
+.hi #features{margin-top:72px}
+.hi .hi-row.tight{padding:56px 0 128px}
+.hi .hi-label{position:sticky;top:24px;align-self:start}
+.hi .hi-secno{display:block;font-size:56px;font-weight:800;line-height:1;letter-spacing:-2px;color:var(--blue);margin-bottom:16px}
+.hi .kicker{font-size:16px;letter-spacing:0;color:var(--sub)}
+.hi .hi-label h2{font-size:36px;line-height:1.25;letter-spacing:-1.2px;margin:8px 0 12px;font-weight:800}
+.hi .hi-label p{font-size:16px;color:var(--sub)}
+/* 묶음(2단계): 24px 제목과 2px 선 */
+.hi .hi-lead-feats{gap:48px;padding-bottom:48px;border-bottom:2px solid var(--ink)}
+.hi .hi-lead-feats>div{border-top:0;padding-top:0}
+.hi .hi-lead-feats h3{font-size:24px;font-weight:800}
+.hi .hi-n{font-size:16px}
+.hi .hi-sub-feats{padding-top:32px;gap:24px 48px}
+.hi .hi-sub-feats h3{font-size:18px;font-weight:700}
+.hi .hi-steps li{grid-template-columns:56px 260px 1fr;padding:20px 0;border-bottom:1px solid var(--line);align-items:baseline}
+.hi .hi-steps li:first-child{border-top:2px solid var(--ink)}
+.hi .hi-steps .hi-n{font-size:24px;font-weight:800;color:var(--blue);background:none;width:auto;height:auto}
+.hi .hi-steps b{font-size:18px}
+.hi .hi-table thead th{font-size:24px;padding-top:0;border-bottom:2px solid var(--ink)}
+.hi .hi-table tr.grp th{font-size:16px;color:var(--ink);padding-top:32px;border-bottom:2px solid var(--ink)}
+.hi .hi-table tbody th{font-size:16px}
+.hi .hi-faq-group{background:none;border:0;padding:0}
+.hi .hi-faq-group+.hi-faq-group{margin-top:48px}
+.hi .hi-group{font-size:24px;font-weight:800;letter-spacing:-.5px;color:var(--ink);border-bottom:2px solid var(--ink);padding-bottom:12px;margin-bottom:0}
+.hi .hi-faq dt{font-size:18px;font-weight:700}
+.hi .hi-faq div:last-child{border-bottom:1px solid var(--line)}
+.hi #start .cta-actions{display:grid;gap:0}
+.hi #start .cta-primary{border:0;border-top:2px solid var(--ink);border-bottom:1px solid var(--line);border-radius:0;background:none;padding:24px 0 32px}
+.hi #start .cta-primary b{font-size:24px;font-weight:800}
+.hi #start .cta-primary p{font-size:18px!important;color:var(--txt)!important;font-weight:400;margin:8px 0 20px}
+.hi #start .cta-main{background:var(--blue);color:#fff;margin:0}
+.hi #start .cta-secondary{display:grid;grid-template-columns:1fr 1fr;gap:0 48px;padding-top:20px}
+.hi #start .choice-btn{border:0;border-radius:0;padding:4px 0;display:block;background:none;min-height:44px}
+.hi #start .choice-btn b{display:block;font-size:18px;font-weight:700;margin-bottom:4px}
+.hi #start .choice-btn span{font-size:16px;color:var(--txt)}
