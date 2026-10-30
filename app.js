@@ -1,4 +1,4 @@
-// 실험 진행: 동의 -> 사전 질문 -> 연습 -> 4개 조건(과업 3개, 이해도 퀴즈, SUS) -> AI 생성 지각도 -> 주관식 2문항 -> 연구 목적 안내
+// 실험 진행: 동의 -> 사전 질문 -> 연습 -> 4개 조건(과업 4개, 이해도 퀴즈, SUS) -> AI 생성 지각도 -> 주관식 2문항 -> 연구 목적 안내
 // 주소
 //   참가자용        index.html                  (배정 칸은 서버가 접속 순서대로 자동 배정)
 //   파일럿용        index.html?pilot=1          (데이터에 파일럿 표시, 배정 인원에 포함 안 됨, &cell=3 으로 칸 지정 가능)
@@ -205,7 +205,7 @@
       await waitClick("#go");
       await runTask({ s, task, practice: true });
     }
-    screen(`<h1>연습이 끝났습니다</h1><p>이제 본 과업을 시작합니다. 서비스 소개 웹페이지 4개를 차례로 보며, 페이지마다 과업 3개와 짧은 질문에 답합니다.</p><button class="primary" id="go">본 과업 시작</button>`);
+    screen(`<h1>연습이 끝났습니다</h1><p>이제 본 과업을 시작합니다. 서비스 소개 웹페이지 4개를 차례로 보며, 페이지마다 과업 4개와 짧은 질문에 답합니다.</p><button class="primary" id="go">본 과업 시작</button>`);
     await waitClick("#go");
 
     // 본 과업
@@ -219,7 +219,7 @@
       backup.surveys.push(ex); send("survey", s, ex);
       for (const task of svc.tasks) {
         k++;
-        screen(`<p class="progress">${step.position}번째 페이지 (총 4개) &nbsp; 과업 ${k}/12</p><h1>${esc(task.id)}</h1><p>${esc(task.prompt)}</p><button class="primary" id="go">과업 시작</button>`);
+        screen(`<p class="progress">${step.position}번째 페이지 (총 4개) &nbsp; 과업 ${k}/${plan.length * svc.tasks.length}</p><h1>${esc(task.id)}</h1><p>${esc(task.prompt)}</p><button class="primary" id="go">과업 시작</button>`);
         await waitClick("#go");
         const row = await runTask({ s, step, task });
         backup.tasks.push(row); keepBackup(s);

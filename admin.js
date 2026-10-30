@@ -4,7 +4,7 @@
   const KKEY = "exp_admin_key";
   const STALE_MIN = 60;
   const CONDS = ["AG", "AS", "HG", "HS"];
-  const TASKS = ["T1", "T2", "T3"];
+  const TASKS = ["T1", "T4", "T2", "T3"];
   const SVC = { schedule: "일정 관리", inventory: "재고 관리", accounting: "회계 자동화", support: "고객 응대" };
   const WILLIAMS = ["AG-AS-HS-HG", "AS-HG-AG-HS", "HG-HS-AS-AG", "HS-AG-HG-AS"];
   let key = "", D = null;
@@ -117,7 +117,7 @@
         ${rows.map((p) => `<tr class="${p.excluded ? "ex" : ""}" data-pid="${esc(p.pid)}">
           <td><b>${esc(p.pid)}</b></td><td>${p.pilot ? "파일럿" : "본 실험"}</td><td>${p.cell}</td><td>${tagOf(p)}</td>
           <td>${fmtTime(p.started_at)}</td><td>${p.total_sec ? (p.total_sec / 60).toFixed(1) : ""}</td>
-          <td>${tcount[p.pid] || 0}/12</td><td class="${tabx[p.pid] ? "flag" : ""}">${tabx[p.pid] || 0}</td>
+          <td>${tcount[p.pid] || 0}/16</td><td class="${tabx[p.pid] ? "flag" : ""}">${tabx[p.pid] || 0}</td>
           <td>${esc(p.browser)}</td><td>${esc(p.window_w)}×${esc(p.window_h)}</td>
           <td class="act"><input type="checkbox" class="exc" ${p.excluded ? "checked" : ""}></td>
           <td class="act l"><input type="text" class="rsn" value="${esc(p.exclude_reason || "")}" placeholder="제외 사유" style="width:200px">${p.note ? `<div class="note">${esc(p.note)}</div>` : ""}</td>
@@ -199,15 +199,15 @@
     const ai = surveys.filter((s) => s.kind === "ai");
     return {
       n: tasks.length,
-      s1: mean(by("T1").map((t) => +ok(t))), s2: mean(by("T2").map((t) => +ok(t))), s3: mean(by("T3").map((t) => +ok(t))), s: mean(tasks.map((t) => +ok(t))),
+      s1: mean(by("T1").map((t) => +ok(t))), s4: mean(by("T4").map((t) => +ok(t))), s2: mean(by("T2").map((t) => +ok(t))), s3: mean(by("T3").map((t) => +ok(t))), s: mean(tasks.map((t) => +ok(t))),
       to: mean(tasks.map((t) => +(String(t.result) === "T"))),
       tct: median(succ.map((t) => +t.tct_sec)), tctc: mean(tasks.map((t) => +t.tct_censored)),
       eff: mean(succ.filter((t) => t.event_eff !== "").map((t) => +t.event_eff)),
       quiz: mean(cond.map((s) => +s.quiz_total / 3)), sus: mean(cond.map((s) => +s.sus_score)), ai: mean(ai.map((s) => +s.ai_rating))
     };
   }
-  const MHEAD = `<tr><th class="l">구분</th><th>과업 수</th><th>T1 성공</th><th>T2 성공</th><th>T3 성공</th><th>전체 성공</th><th>시간 초과</th><th>TCT 중앙값(성공, 초)</th><th>TCT 평균(90초 중도절단)</th><th>이벤트 효율(%)</th><th>퀴즈 정답률</th><th>SUS</th><th>AI 생성 지각도</th></tr>`;
-  const mrow = (label, m) => `<tr><td class="l"><b>${label}</b></td><td>${m.n}</td><td>${pct(m.s1)}</td><td>${pct(m.s2)}</td><td>${pct(m.s3)}</td><td>${pct(m.s)}</td><td>${pct(m.to)}</td><td>${f1(m.tct)}</td><td>${f1(m.tctc)}</td><td>${f1(m.eff)}</td><td>${pct(m.quiz)}</td><td>${f1(m.sus)}</td><td>${f1(m.ai)}</td></tr>`;
+  const MHEAD = `<tr><th class="l">구분</th><th>과업 수</th><th>T1 성공</th><th>T4 성공</th><th>T2 성공</th><th>T3 성공</th><th>전체 성공</th><th>시간 초과</th><th>TCT 중앙값(성공, 초)</th><th>TCT 평균(90초 중도절단)</th><th>이벤트 효율(%)</th><th>퀴즈 정답률</th><th>SUS</th><th>AI 생성 지각도</th></tr>`;
+  const mrow = (label, m) => `<tr><td class="l"><b>${label}</b></td><td>${m.n}</td><td>${pct(m.s1)}</td><td>${pct(m.s4)}</td><td>${pct(m.s2)}</td><td>${pct(m.s3)}</td><td>${pct(m.s)}</td><td>${pct(m.to)}</td><td>${f1(m.tct)}</td><td>${f1(m.tctc)}</td><td>${f1(m.eff)}</td><td>${pct(m.quiz)}</td><td>${f1(m.sus)}</td><td>${f1(m.ai)}</td></tr>`;
   function renderSummary() {
     const T = analysisTasks(false), S = analysisSurveys(false);
     const n = new Set(T.map((t) => t.pid)).size;
