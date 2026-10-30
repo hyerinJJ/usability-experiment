@@ -17,10 +17,10 @@ const HEAD = {
     "tct_sec", "tct_censored", "event", "ten", "min_ten", "event_eff", "back", "non_interactive_clicks",
     "max_scroll_pct", "tab_leaves", "tab_hidden_sec", "exclude_tab", "window_w", "window_h", "saved_at", "events"],
   surveys: ["key", "pid", "pilot", "kind", "position", "condition", "service", "quiz1", "quiz2", "quiz3",
-    "quiz_total", "sus_items", "sus_score", "ai_rating", "open1", "open2", "saved_at"]
+    "quiz_total", "sus_items", "sus_score", "ai_rating", "open1", "open2", "explore_scroll_pct", "saved_at"]
 };
 
-function doGet() { return out({ ok: true, msg: "실험 서버가 동작 중입니다.", version: 3, key_set: String(ADMIN_KEY) !== "여기에_관리자_비밀번호" }); }
+function doGet() { return out({ ok: true, msg: "실험 서버가 동작 중입니다.", version: 4, key_set: String(ADMIN_KEY) !== "여기에_관리자_비밀번호" }); }
 
 function doPost(e) {
   let req;

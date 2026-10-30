@@ -196,6 +196,7 @@
       <ul><li>화면 왼쪽에는 웹페이지가, 오른쪽에는 질문이 나옵니다.</li>
       <li>질문을 읽고 왼쪽 웹페이지에서 답을 찾은 뒤, 오른쪽 보기 중 하나를 누르면 다음으로 넘어갑니다.</li>
       <li>화면을 열라는 과업은 해당 버튼을 누르면 끝납니다.</li>
+      <li>본 과업에서는 페이지마다 먼저 ${C.EXPLORE_SEC}초 동안 페이지를 자유롭게 둘러본 뒤 과업을 시작합니다.</li>
       <li>과업마다 제한시간은 ${C.LIMIT_SEC}초입니다.</li></ul>
       <button class="primary" id="go">연습 시작</button>`);
     await waitClick("#go");
@@ -212,6 +213,10 @@
     let k = 0;
     for (const step of plan) {
       const svc = window.SERVICES[step.service];
+      screen(`<p class="progress">${step.position}번째 페이지 (총 4개)</p><h1>먼저 페이지를 둘러보세요</h1><p>새 서비스 소개 페이지가 나옵니다. ${C.EXPLORE_SEC}초 동안 위아래로 자유롭게 살펴보세요. 시간이 끝나면 자동으로 과업이 시작됩니다.</p><button class="primary" id="go">둘러보기 시작</button>`);
+      await waitClick("#go");
+      const ex = await explore(step);
+      backup.surveys.push(ex); send("survey", s, ex);
       for (const task of svc.tasks) {
         k++;
         screen(`<p class="progress">${step.position}번째 페이지 (총 4개) &nbsp; 과업 ${k}/12</p><h1>${esc(task.id)}</h1><p>${esc(task.prompt)}</p><button class="primary" id="go">과업 시작</button>`);
@@ -276,6 +281,38 @@
       setTimeout(upd, 1000);
     };
     upd();
+  }
+
+  // 과업 전 자유 탐색: 질문 없이 페이지 전체를 정해진 시간 동안 본다(버튼 이동은 막고 스크롤만 기록)
+  function explore(step) {
+    return new Promise((resolve) => {
+      root.innerHTML = `<div class="shell"><div class="stage" id="stage"></div>
+        <aside class="panel"><div class="task-type">둘러보기</div>
+        <div class="task-prompt">이 서비스 소개 페이지를 자유롭게 살펴보세요.</div>
+        <p class="note-sm">위아래로 스크롤하며 어떤 서비스인지 살펴보면 됩니다. 이 단계에서는 버튼이 눌리지 않습니다.</p>
+        <div class="timer" id="timer">남은 시간 ${C.EXPLORE_SEC}초</div></aside></div>
+        ${pilot ? '<div class="pilot-badge">파일럿 모드</div>' : ""}`;
+      const stage = root.querySelector("#stage");
+      stage.innerHTML = window.renderCondition(step.service, step.condition);
+      stage.scrollTop = 0;
+      let maxScroll = 0;
+      const onScroll = () => {
+        const d = stage.scrollHeight > stage.clientHeight ? (stage.scrollTop + stage.clientHeight) / stage.scrollHeight : 1;
+        maxScroll = Math.max(maxScroll, Math.round(d * 100));
+      };
+      onScroll();
+      stage.addEventListener("scroll", onScroll, { passive: true });
+      stage.addEventListener("click", (e) => { if (e.target.closest("button, a")) e.preventDefault(); }, true);
+      const t0 = performance.now();
+      const tick = setInterval(() => {
+        const left = Math.max(0, C.EXPLORE_SEC * 1000 - (performance.now() - t0));
+        const el = root.querySelector("#timer"); if (el) el.textContent = `남은 시간 ${Math.ceil(left / 1000)}초`;
+        if (left <= 0) {
+          clearInterval(tick);
+          resolve({ kind: "explore", position: step.position, condition: step.condition, service: step.service, explore_scroll_pct: maxScroll });
+        }
+      }, 250);
+    });
   }
 
   function runTask({ s, step, task, practice }) {

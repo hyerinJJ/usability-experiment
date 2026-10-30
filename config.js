@@ -4,6 +4,7 @@ window.CONFIG = {
   // 비워 두면 서버 없이 브라우저에만 저장하고, 마지막 화면에서 파일로 내려받는다(시연용).
   ENDPOINT: "https://script.google.com/macros/s/AKfycbxDv-Uiri4XNKTCt9YIxXJHuBaZTTu8lGAmyopfyEItqJ2RMZ3G1M1B9lO60fIMSoy9/exec",
   LIMIT_SEC: 90,          // 과업 제한시간
+  EXPLORE_SEC: 30,        // 페이지마다 과업 전 자유 탐색 시간
   MIN_WIDTH: 1280,        // 최소 창 가로 크기
   TAB_EXCLUDE_SEC: 10,    // 과업 중 탭 이탈이 이 시간 이상이면 분석에서 제외
   CONTACT: "인간공학실험 5조",   // 마지막 화면에 보이는 문의처

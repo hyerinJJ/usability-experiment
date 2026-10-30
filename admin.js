@@ -174,14 +174,14 @@
           <div class="card"><div class="k">사전 질문</div><div class="v" style="font-size:13px;font-weight:600;line-height:1.6">${esc(p.age || "-")}, ${esc(p.gender || "-")}, ${esc(p.major || "-")}<br>UI 경험 ${esc(p.design_exp || "-")}, AI로 화면 제작 ${esc(p.genai_web_exp || "-")}, 요금제 비교 ${esc(p.plan_compare_exp || "-")}</div></div>
         </div>
         ${positions.map((pos) => {
-          const tt = T.filter((t) => +t.position === pos); const c = cond(pos); const a = ai(pos);
+          const tt = T.filter((t) => +t.position === pos); const c = cond(pos); const a = ai(pos); const ex = S.find((x) => x.kind === "explore" && +x.position === pos);
           const condName = (tt[0] || c || {}).condition, svc = (tt[0] || c || {}).service;
           return `<h3>${pos}번째 페이지: ${esc(condName || "")} (${esc(SVCN[svc] || svc || "")})</h3>
             <table><tr><th>과업</th><th>결과</th><th>시간(초)</th><th>이벤트(TEN)</th><th>이벤트 효율</th><th>뒤로 가기</th><th>빈 곳 클릭</th><th>스크롤 깊이</th><th>탭 이탈</th><th class="l">조작 순서</th></tr>
             ${tt.map((t) => `<tr class="${String(t.exclude_tab) === "1" ? "ex" : ""}"><td><b>${esc(t.task)}</b></td><td>${resTag(t.result)}</td><td>${esc(t.tct_sec)}</td><td>${esc(t.ten)}</td><td>${t.event_eff === "" ? "-" : esc(t.event_eff) + "%"}</td><td>${esc(t.back)}</td><td>${esc(t.non_interactive_clicks)}</td><td>${esc(t.max_scroll_pct)}%</td>
               <td class="${+t.tab_leaves ? "flag" : ""}">${+t.tab_leaves ? `${t.tab_leaves}회 ${t.tab_hidden_sec}초${String(t.exclude_tab) === "1" ? " (제외)" : ""}` : "-"}</td><td class="l" style="white-space:normal">${evText(t)}</td></tr>`).join("") || '<tr><td colspan="10" class="note">과업 기록 없음</td></tr>'}
             </table>
-            <p class="note">${c ? `퀴즈 ${c.quiz_total}/3 (문항별 ${c.quiz1}, ${c.quiz2}, ${c.quiz3}) &nbsp; SUS ${esc(c.sus_score)}점 (응답 ${esc(c.sus_items)})` : "퀴즈와 SUS 응답 없음"}${a ? ` &nbsp; AI 생성 지각도 ${esc(a.ai_rating)}/7` : ""}</p>`;
+            <p class="note">${c ? `퀴즈 ${c.quiz_total}/3 (문항별 ${c.quiz1}, ${c.quiz2}, ${c.quiz3}) &nbsp; SUS ${esc(c.sus_score)}점 (응답 ${esc(c.sus_items)})` : "퀴즈와 SUS 응답 없음"}${a ? ` &nbsp; AI 생성 지각도 ${esc(a.ai_rating)}/7` : ""}${ex ? ` &nbsp; 둘러보기 스크롤 ${esc(ex.explore_scroll_pct)}%` : ""}</p>`;
         }).join("")}
         <h3>주관식 응답</h3>
         ${open ? `<div class="fb">가장 어려웠던 정보: ${esc(open.open1)}\n이유: ${esc(open.open2)}</div>` : '<p class="note">응답 없음</p>'}
@@ -284,7 +284,7 @@
       <p class="note">모든 원자료는 구글 시트에도 그대로 있습니다. 여기서는 분석하기 좋은 형태로 정리해 내려받습니다(엑셀에서 한글이 깨지지 않는 CSV).</p>
       <h3>분석용(본 실험)</h3>
       <p class="note"><b>include</b> 열이 1인 행만 분석에 씁니다(완료, 제외 안 됨, 탭 이탈 아님). 시각 구조 visual(A/H), 문구 copy(G/S) 열이 붙어 있어 모형에 바로 넣을 수 있습니다. 생존 분석은 tct_censored와 event 열을 쓰면 됩니다.</p>
-      <div class="row"><button class="b p" data-d="tasks">과업 자료(tasks)</button><button class="b p" data-d="cond">조건별 퀴즈, SUS(conditions)</button><button class="b p" data-d="ai">AI 생성 지각도(ai_ratings)</button><button class="b p" data-d="open">주관식(open)</button><button class="b p" data-d="people">참가자(participants)</button></div>
+      <div class="row"><button class="b p" data-d="tasks">과업 자료(tasks)</button><button class="b p" data-d="cond">조건별 퀴즈, SUS(conditions)</button><button class="b p" data-d="ai">AI 생성 지각도(ai_ratings)</button><button class="b p" data-d="open">주관식(open)</button><button class="b p" data-d="explore">둘러보기 스크롤(explore)</button><button class="b p" data-d="people">참가자(participants)</button></div>
       <h3>파일럿</h3>
       <div class="row"><button class="b" data-d="ptasks">파일럿 과업 자료</button><button class="b" data-d="psurveys">파일럿 설문 자료</button><button class="b" data-d="ppeople">파일럿 참가자</button></div>
       <h3>원자료 전체</h3>
@@ -304,6 +304,7 @@
     const M = {
       tasks: () => save(`tasks_${day}.csv`, toCSV(D.tasks.filter(main).map(withFlags), TK)),
       cond: () => save(`conditions_${day}.csv`, toCSV(D.surveys.filter((s) => main(s) && s.kind === "condition").map(sWith), ["pid", "cell", "position", "condition", "visual", "copy", "service", "quiz1", "quiz2", "quiz3", "quiz_total", "sus_items", "sus_score", "include"])),
+      explore: () => save(`explore_${day}.csv`, toCSV(D.surveys.filter((s) => main(s) && s.kind === "explore").map(sWith), ["pid", "cell", "position", "condition", "visual", "copy", "service", "explore_scroll_pct", "include"])),
       ai: () => save(`ai_ratings_${day}.csv`, toCSV(D.surveys.filter((s) => main(s) && s.kind === "ai").map(sWith), ["pid", "cell", "position", "condition", "visual", "copy", "service", "ai_rating", "include"])),
       open: () => save(`open_${day}.csv`, toCSV(D.surveys.filter((s) => main(s) && s.kind === "open").map(sWith), ["pid", "cell", "open1", "open2", "include"])),
       people: () => save(`participants_${day}.csv`, toCSV(D.participants.filter((p) => !p.pilot).map(strip))),

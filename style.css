@@ -82,59 +82,55 @@ h3{margin:0}
 .footer{border-top:1px solid var(--line);padding:24px 0 30px;color:#7c879a;font-size:11px;display:flex;justify-content:space-between;align-items:center}
 .footer .brand{font-size:16px;color:var(--ink)}.footer .brand-mark{width:25px;height:25px;font-size:14px;border-radius:8px}
 
-/* AI 전형형(원본 구조 그대로): 모든 본문 섹션 동일 여백 96px, 가운데 제목 + 3열 그리드 반복 */
+/* AI 전형형: 모든 본문 섹션이 같은 여백(96px), 같은 가운데 제목, 같은 3열 카드, 같은 글자 크기 */
 .ai .section{padding:96px 0}
 .ai .section-head{text-align:center;max-width:660px;margin:0 auto 46px}
 .ai .section-head p{color:var(--muted);margin:12px auto 0;max-width:560px}
-.ai .features,.ai .pricing,.ai .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-.ai .feature{border:1px solid var(--line);border-radius:17px;padding:25px 23px 27px;background:#fff}
-.ai .step{position:relative;padding:4px 14px 5px 0}
-.ai .step:not(:last-child):after{content:"";position:absolute;top:25px;left:72px;right:5px;border-top:1px dashed #c6d1ef}
-.ai .step-no{width:50px;height:50px;display:grid;place-items:center;border-radius:15px;background:#fff;color:var(--blue);font-size:14px;font-weight:800;box-shadow:0 7px 20px #3b5ab514}
-.ai .step h3{font-size:18px;margin:20px 0 7px}
-.ai .step p{font-size:13px;color:var(--muted);max-width:300px}
-.ai .price-card{border:1px solid var(--line);border-radius:17px;padding:26px;background:#fff;display:flex;flex-direction:column}
-.ai .price-card h3{font-size:17px;margin:0 0 5px}
-.ai .plan-copy{font-size:13px;color:var(--muted);min-height:38px}
-.ai .plan-body{font-size:12px;color:#8791a3;padding:16px 0 0;border-top:1px solid var(--line);margin-top:12px;flex:1}
-.ai .faq{background:#f8faff}
-.ai .faq-list{max-width:760px;margin:auto}
-.ai .faq-item{border-bottom:1px solid #e2e8f4;padding:20px 2px}
-.ai .faq-q{font-weight:700;font-size:15px}
-.ai .faq-a{color:var(--muted);font-size:13px;margin-top:8px}
+.ai .features,.ai .pricing,.ai .steps,.ai .faqs{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.ai .feature,.ai .price-card{border:1px solid var(--line);border-radius:17px;padding:26px 24px 28px;background:#fff;text-align:center;display:flex;flex-direction:column;align-items:center}
+.ai .feature-icon{margin-bottom:18px}
+.ai .feature h3,.ai .price-card h3{font-size:17px;letter-spacing:-.4px;margin:0 0 8px}
+.ai .feature p,.ai .plan-copy,.ai .plan-body{font-size:13px;color:var(--muted);line-height:1.75}
+.ai .step-no{font-size:14px;font-weight:800}
+.ai .plan-body{margin-top:6px;flex:1}
+.ai .plan-btn{margin-top:18px}
+.ai .faq{background:var(--pale)}
 
-/* 위계 설계형(같은 스타일, 배치만 다름) */
-.hi .hi-sec{padding:0 0 112px}                       /* 묶음 사이 간격은 넓게 */
-.hi .hi-sec:first-of-type{padding-top:96px}
-.hi #features{padding-top:96px}
-.hi .hi-sec.tight{padding:72px 0 80px;margin-bottom:96px}
-.hi .hi-head{margin-bottom:24px;max-width:720px}     /* 제목과 내용 사이는 좁게, 왼쪽 정렬 */
-.hi .hi-head h2{font-size:36px;margin:8px 0 6px}
-.hi .hi-head p{color:var(--muted)}
-.hi .hi-feat{display:grid;grid-template-columns:1.35fr 1fr;gap:18px}   /* 중요도에 따라 카드 크기 차등 */
+/* 위계 설계형: 같은 스타일, 배치만 위계 원칙으로 */
+.hi .hi-sec{padding:0 0 128px}                       /* 묶음 사이 간격은 넓게 */
+.hi #features{padding-top:104px}
+.hi .hi-sec.tight{padding:64px 0 72px;margin-bottom:112px}
+.hi .hi-head{margin-bottom:20px;max-width:720px}     /* 제목과 내용 사이는 좁게, 왼쪽 정렬 */
+.hi .hi-head h2{font-size:34px;margin:6px 0 4px}
+.hi .hi-head p{color:var(--muted);font-size:15px}
+.hi .hi-feat{display:grid;grid-template-columns:1.5fr 1fr;gap:16px}   /* 중요도에 따라 카드 크기 차등 */
 .hi .feature{border:1px solid var(--line);border-radius:17px;background:#fff}
-.hi .feature.main{padding:36px;background:var(--tint);border-color:color-mix(in srgb,var(--blue) 18%,#fff);display:flex;flex-direction:column;justify-content:flex-end;min-height:280px}
-.hi .feature.main h3{font-size:26px;letter-spacing:-.8px}
-.hi .feature.main p{font-size:15px}
-.hi .feat-side{display:grid;gap:18px}
-.hi .feature.small{padding:22px;display:flex;gap:16px;align-items:flex-start}
-.hi .feature.small .feature-icon{margin:0}
-.hi .hi-steps{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(3,1fr);gap:24px;border-top:2px solid var(--ink)}
-.hi .hi-steps li{display:flex;gap:14px;padding-top:18px}
-.hi .hi-steps .step-no{font-weight:800;color:var(--blue);font-size:14px;padding-top:2px}
-.hi .hi-steps h3{font-size:16px;margin-bottom:4px}
+.hi .feature.main{padding:40px;background:var(--tint);border-color:color-mix(in srgb,var(--blue) 18%,#fff);display:flex;flex-direction:column;justify-content:flex-end;min-height:300px}
+.hi .feature.main h3{font-size:28px;letter-spacing:-.9px;margin-bottom:10px}
+.hi .feature.main p{font-size:16px;color:#44516b}
+.hi .feat-side{display:grid;gap:16px}
+.hi .feature.small{padding:20px 22px;display:flex;gap:14px;align-items:flex-start}
+.hi .feature.small .feature-icon{margin:0;width:38px;height:38px;font-size:17px;border-radius:11px}
+.hi .feature.small h3{font-size:15px;margin-bottom:4px}
+.hi .feature.small p{font-size:13px}
+.hi .how .hi-head{max-width:none}
+.hi .hi-steps{list-style:none;padding:0;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:24px;border-top:2px solid var(--ink)}
+.hi .hi-steps li{display:flex;gap:12px;padding-top:16px}
+.hi .hi-steps .step-no{font-weight:800;color:var(--blue);font-size:14px;padding-top:1px}
+.hi .hi-steps h3{font-size:15px;margin-bottom:2px}
 .hi .hi-steps p{font-size:13px;color:var(--muted)}
-.hi .hi-table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);border-radius:17px;overflow:hidden}   /* 요금제는 비교표 */
-.hi .hi-table th,.hi .hi-table td{padding:16px 20px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+.hi .hi-table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);border-radius:17px;overflow:hidden}   /* 요금제는 비교표, 요금 줄을 가장 크게 */
+.hi .hi-table th,.hi .hi-table td{padding:16px 22px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
 .hi .hi-table thead th{font-size:18px;background:#f8faff}
-.hi .hi-table tbody th{width:110px;color:var(--muted);font-weight:600;font-size:13px}
-.hi .hi-table tr.key td{font-size:18px;font-weight:800;color:var(--ink)}
+.hi .hi-table tbody th{width:96px;color:var(--muted);font-weight:600;font-size:13px}
+.hi .hi-table tr.key td{font-size:21px;font-weight:800;color:var(--ink);background:var(--tint);letter-spacing:-.4px}
+.hi .hi-table tr.key th{background:var(--tint)}
 .hi .hi-table td{font-size:13px;color:var(--muted)}
 .hi .hi-table tr:last-child td,.hi .hi-table tr:last-child th{border-bottom:0}
 .hi .hi-table .plan-btn{margin:0}
-.hi .hi-faq{margin:0;border-top:2px solid var(--ink)}       /* 자주 묻는 질문은 목록 */
-.hi .hi-faq dt{font-weight:800;font-size:17px;padding-top:18px}
-.hi .hi-faq dd{margin:6px 0 0;padding-bottom:18px;border-bottom:1px solid var(--line);color:var(--muted);font-size:14px}
+.hi .hi-faq{margin:0;border-top:2px solid var(--ink)}       /* 자주 묻는 질문은 질문을 크게 한 목록 */
+.hi .hi-faq dt{font-weight:800;font-size:19px;padding-top:20px;letter-spacing:-.3px}
+.hi .hi-faq dd{margin:6px 0 0;padding-bottom:20px;border-bottom:1px solid var(--line);color:var(--muted);font-size:14px}
 .hi .cta{padding-top:0}
 
 /* 하위 화면, 연습 */
@@ -187,5 +183,5 @@ h3{margin:0}
 .screen fieldset.missing { border-color:#e5484d; }
 .pilot-badge { position:fixed; left:12px; bottom:12px; z-index:50; background:#fff4d6; color:#7a5200; border:1px solid #f0d27a; border-radius:8px; padding:6px 10px; font-size:12px; }
 .panel .practice-tag { font-size:12px; color:#7a5200; background:#fff4d6; border-radius:6px; padding:2px 8px; align-self:flex-start; }
-.hi .how .hi-head{max-width:none}
-.hi .how .hi-steps{margin:0 auto}
+
+.panel .note-sm { font-size:13px; color:var(--muted); line-height:1.6; }

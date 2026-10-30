@@ -73,7 +73,7 @@
     </div></section>`;
   const footer = (brand) => `<footer class="footer"><span class="brand"><span class="brand-mark">↗</span>${esc(brand)}</span><span>© 2026 ${esc(brand)}. 가상의 서비스입니다.</span></footer>`;
 
-  // ---------- AI 전형형: 원본 그대로(E2 균일한 3열 카드, E3 섹션 간 동일 여백, E4 가운데 제목 + 그리드 반복)
+  // ---------- AI 전형형: 원본 구조(E2 균일한 3열 카드, E3 섹션 간 동일 여백, E4 가운데 제목 + 같은 카드 그리드를 모든 섹션에 반복)
   function renderAI(svc, c) {
     const head = (k, h, p) => `<div class="section-head">${kicker(k)}<h2>${esc(h)}</h2><p>${esc(p)}</p></div>`;
     return `
@@ -83,11 +83,11 @@
         <section class="section" id="features">${head("핵심 기능", c.features.heading, c.features.lead)}
           <div class="features">${c.features.items.map((f, i) => `<article class="feature"><div class="feature-icon">${ICONS[i]}</div><h3>${esc(f.title)}</h3><p>${esc(f.body)}</p></article>`).join("")}</div></section>
         <section class="section how" id="how">${head("작동 방식", c.steps.heading, c.steps.lead)}
-          <div class="steps">${c.steps.items.map((s, i) => `<article class="step"><div class="step-no">0${i + 1}</div><h3>${esc(s.title)}</h3><p>${esc(s.body)}</p></article>`).join("")}</div></section>
+          <div class="steps">${c.steps.items.map((s, i) => `<article class="feature"><div class="feature-icon step-no">0${i + 1}</div><h3>${esc(s.title)}</h3><p>${esc(s.body)}</p></article>`).join("")}</div></section>
         <section class="section" id="pricing">${head("요금제", c.pricing.heading, c.pricing.lead)}
           <div class="pricing">${c.pricing.plans.map((p) => `<article class="price-card"><h3>${esc(p.name)}</h3><p class="plan-copy">${esc(p.label)}</p><p class="plan-body">${esc(p.body)}</p><button class="plan-btn" data-go="trial">시작하기</button></article>`).join("")}</div></section>
         <section class="section faq" id="faq">${head("FAQ", c.faq.heading, c.faq.lead)}
-          <div class="faq-list">${c.faq.items.map((i) => `<div class="faq-item"><p class="faq-q">${esc(i.q)}</p><p class="faq-a">${esc(i.a)}</p></div>`).join("")}</div></section>
+          <div class="faqs">${c.faq.items.map((i) => `<article class="feature"><div class="feature-icon">?</div><h3>${esc(i.q)}</h3><p>${esc(i.a)}</p></article>`).join("")}</div></section>
         ${cta(c)}
         ${footer(svc.brand)}
       </div>`;
