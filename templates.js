@@ -77,9 +77,11 @@
   // 위계 설계형: 주 행동(무료 체험)은 크게, 보조 행동은 설명과 함께 작은 목록으로(E2)
   const ctaH = (c) => `
     <section class="cta"><div class="cta-box">
-      <div class="cta-copy">${kicker("시작하기")}<h2>${esc(c.cta.heading)}</h2><p>${esc(c.cta.body)}</p>
-        <button class="btn cta-main" data-go="trial">무료 체험 →</button><p class="cta-main-desc">${ACTIONS[0].desc}</p></div>
-      <div class="signup">${ACTIONS.slice(1).map((a) => `<button class="choice-btn" data-go="${a.go}"><b>${a.name}</b><span>${a.desc}</span></button>`).join("")}</div>
+      <div class="cta-copy">${kicker("시작하기")}<h2>${esc(c.cta.heading)}</h2><p>${esc(c.cta.body)}</p></div>
+      <div class="cta-actions">
+        <div class="cta-primary"><b>${ACTIONS[0].name}</b><p>${ACTIONS[0].desc}</p><button class="btn cta-main" data-go="trial">${ACTIONS[0].name} →</button></div>
+        <div class="cta-secondary">${ACTIONS.slice(1).map((a) => `<button class="choice-btn" data-go="${a.go}"><b>${a.name}</b><span>${a.desc}</span></button>`).join("")}</div>
+      </div>
     </div></section>`;
   const footer = (brand) => `<footer class="footer"><span class="brand"><span class="brand-mark">↗</span>${esc(brand)}</span><span>© 2026 ${esc(brand)}. 가상의 서비스입니다.</span></footer>`;
 
