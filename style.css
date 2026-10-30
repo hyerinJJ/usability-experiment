@@ -321,3 +321,34 @@ h3{margin:0}
 .hi #start .choice-btn{border:0;border-radius:0;padding:4px 0;display:block;background:none;min-height:44px}
 .hi #start .choice-btn b{display:block;font-size:18px;font-weight:700;margin-bottom:4px}
 .hi #start .choice-btn span{font-size:16px;color:var(--txt)}
+
+/* 위계 설계형 강조 줄이기: 위계는 대비로 생기므로 강조는 적게.
+   색은 무료 체험 버튼과 링크에만, 굵은 글씨는 제목 단계에만, 선은 섹션 경계만 진하게(1px), 나머지는 연한 1px */
+.hi .hero h1{font-size:48px;letter-spacing:-1.6px}
+.hi .eyebrow{color:var(--sub);font-weight:600}
+.hi .hi-row+.hi-row,.hi .hero+.hi-row{border-top:1px solid #c9d0db}
+.hi .hi-row{padding:48px 0 112px}
+.hi .hi-row.tight{padding:48px 0 112px}
+.hi .hi-secno{font-size:14px;font-weight:600;letter-spacing:0;color:var(--sub);margin-bottom:6px;display:inline-block;margin-right:8px}
+.hi .kicker{display:inline-block;font-size:14px;font-weight:600;color:var(--sub)}
+.hi .hi-label h2{font-size:30px;font-weight:700;letter-spacing:-.8px}
+.hi .hi-n{color:var(--sub);font-weight:600}
+.hi .hi-lead-feats{border-bottom:1px solid var(--line);padding-bottom:36px}
+.hi .hi-lead-feats h3{font-size:22px;font-weight:700}
+.hi .hi-sub-feats h3{font-size:17px;font-weight:600}
+.hi .hi-steps li:first-child{border-top:1px solid var(--line)}
+.hi .hi-steps .hi-n{font-size:17px;font-weight:600;color:var(--sub)}
+.hi .hi-steps b{font-size:17px;font-weight:600}
+.hi .hi-table thead th{font-size:20px;font-weight:700;border-bottom:1px solid #c9d0db}
+.hi .hi-table tr.key td{font-size:18px;font-weight:700}
+.hi .hi-table tr.grp th{font-size:14px;font-weight:600;color:var(--sub);border-bottom:1px solid var(--line);padding-top:28px}
+.hi .hi-table tbody th{font-weight:500}
+.hi .hi-table td.lim{font-weight:600}
+.hi .hi-table .yes{font-weight:600}
+.hi .hi-link{font-weight:600}
+.hi .hi-group{font-size:20px;font-weight:700;border-bottom:1px solid #c9d0db}
+.hi .hi-faq dt{font-size:17px;font-weight:600}
+.hi #start .cta-primary{border-top:1px solid #c9d0db}
+.hi #start .cta-primary b{font-size:22px;font-weight:700}
+.hi #start .choice-btn b{font-size:17px;font-weight:600}
+.hi #start .cta-main{box-shadow:none}
