@@ -190,22 +190,30 @@
     await waitValid(["age", "gender", "major", "design_exp", "genai_web_exp", "plan_compare_exp"]);
     send("pre", s, { age: val("age"), gender: val("gender"), major: val("major"), design_exp: val("design_exp"), genai_web_exp: val("genai_web_exp"), plan_compare_exp: val("plan_compare_exp") });
 
-    // 연습
+    // 연습: 본 과업과 같은 순서(둘러보기 → 과업)를 그대로 해 본다
     screen(`<h1>연습</h1>
       <p>본 과업 전에 방법을 익히는 연습입니다. 연습 결과는 기록하지 않습니다.</p>
-      <ul><li>화면 왼쪽에는 웹페이지가, 오른쪽에는 질문이 나옵니다.</li>
+      <ul><li>페이지마다 먼저 ${C.EXPLORE_SEC}초 동안 페이지를 자유롭게 둘러봅니다. 이때는 버튼이 눌리지 않고 스크롤만 됩니다.</li>
+      <li>둘러볼 때 요금제나 이용권 표, 자주 묻는 질문, 버튼이 어디 있는지 봐 두면 과업에서 찾기 쉽습니다.</li>
+      <li>둘러보기가 끝나면 과업이 나옵니다. 화면 왼쪽에는 웹페이지가, 오른쪽에는 질문이 나옵니다.</li>
       <li>질문을 읽고 왼쪽 웹페이지에서 답을 찾은 뒤, 오른쪽 보기 중 하나를 누르면 다음으로 넘어갑니다.</li>
       <li>화면을 열라는 과업은 해당 버튼을 누르면 끝납니다.</li>
-      <li>본 과업에서는 페이지마다 먼저 ${C.EXPLORE_SEC}초 동안 페이지를 자유롭게 둘러본 뒤 과업을 시작합니다.</li>
       <li>과업마다 제한시간은 ${C.LIMIT_SEC}초입니다.</li></ul>
       <button class="primary" id="go">연습 시작</button>`);
     await waitClick("#go");
+    screen(`<p class="progress">연습</p><h1>먼저 페이지를 둘러보세요</h1><p>연습용 도서관 페이지가 나옵니다. ${C.EXPLORE_SEC}초 동안 위아래로 자유롭게 살펴보세요. 시간이 끝나면 자동으로 과업이 시작됩니다.</p><button class="primary" id="go">둘러보기 시작</button>`);
+    await waitClick("#go");
+    await explore(null);
     for (const task of window.PRACTICE.tasks) {
       screen(`<p class="progress">연습</p><h1>${esc(task.id)}</h1><p>${esc(task.prompt)}</p><button class="primary" id="go">과업 시작</button>`);
       await waitClick("#go");
-      await runTask({ s, task, practice: true });
+      const pr = await runTask({ s, task, practice: true });
+      const head = pr.ok ? "잘했어요" : pr.timeout ? "시간이 끝났습니다" : "다시 확인해 보세요";
+      const ans = task.choices ? `정답은 "${esc(task.choices[task.correct])}"입니다. ` : "";
+      screen(`<p class="progress">연습</p><h1>${head}</h1><p>${ans}${esc(task.tip)}</p><button class="primary" id="go">다음</button>`);
+      await waitClick("#go");
     }
-    screen(`<h1>연습이 끝났습니다</h1><p>이제 본 과업을 시작합니다. 서비스 소개 웹페이지 4개를 차례로 보며, 페이지마다 과업 4개와 짧은 질문에 답합니다.</p><button class="primary" id="go">본 과업 시작</button>`);
+    screen(`<h1>연습이 끝났습니다</h1><p>이제 본 과업을 시작합니다. 서비스 소개 웹페이지 4개를 차례로 보며, 페이지마다 ${C.EXPLORE_SEC}초 둘러보기, 과업 4개, 짧은 질문 순서로 진행합니다.</p><button class="primary" id="go">본 과업 시작</button>`);
     await waitClick("#go");
 
     // 본 과업
@@ -293,7 +301,7 @@
         <div class="timer" id="timer">남은 시간 ${C.EXPLORE_SEC}초</div></aside></div>
         ${pilot ? '<div class="pilot-badge">파일럿 모드</div>' : ""}`;
       const stage = root.querySelector("#stage");
-      stage.innerHTML = window.renderCondition(step.service, step.condition);
+      stage.innerHTML = step ? window.renderCondition(step.service, step.condition) : window.renderPractice("main");
       stage.scrollTop = 0;
       let maxScroll = 0;
       const onScroll = () => {
@@ -309,6 +317,7 @@
         const el = root.querySelector("#timer"); if (el) el.textContent = `남은 시간 ${Math.ceil(left / 1000)}초`;
         if (left <= 0) {
           clearInterval(tick);
+          if (!step) return resolve(null);
           resolve({ kind: "explore", position: step.position, condition: step.condition, service: step.service, explore_scroll_pct: maxScroll });
         }
       }, 250);
@@ -344,7 +353,7 @@
         setTimeout(() => {
           const r = logger.finish({ code, answer, elapsed });
           logger.stop();
-          if (practice) return resolve(null);
+          if (practice) return resolve({ ok: r.result === 1, timeout: code === "T" });
           const ok = r.result === 1;
           r.tct_censored = ok ? r.tct_sec : C.LIMIT_SEC;   // 오답과 시간 초과는 제한시간에서 중도절단
           r.event = ok ? 1 : 0;

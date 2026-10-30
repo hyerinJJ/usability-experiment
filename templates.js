@@ -169,12 +169,25 @@
       <h1>좌석 예약</h1><p>원하는 열람실과 시간을 고르면 좌석이 예약됩니다.</p></div></div>`;
     return `<div class="page practice" style="--blue:#5b6b7f">${pnav(brand)}
       <section class="pr-hero"><span class="eyebrow"><i></i> 학생 서비스</span><h1>한빛 도서관 열람실</h1>
-        <p class="hero-copy">재학생이면 누구나 이용할 수 있는 열람실입니다. 좌석은 하루 최대 4시간까지 예약할 수 있고, 예약 후 15분 안에 입실하지 않으면 자동으로 취소됩니다.</p></section>
+        <p class="hero-copy">재학생이면 누구나 이용할 수 있는 열람실입니다. 좌석 예약 시간과 대출 권수는 이용권에 따라 다르고, 예약 후 15분 안에 입실하지 않으면 자동으로 취소됩니다.</p></section>
       <section class="pr-grid">
         <div class="pr-box"><h3>운영 시간</h3><p>평일 08:00부터 22:00까지</p><p>주말과 공휴일 10:00부터 17:00까지</p><p class="pr-note">시험 기간에는 별도로 공지합니다.</p></div>
         <div class="pr-box"><h3>이용 규칙</h3><p>열람실 안에서는 음식물을 먹을 수 없습니다.</p><p>통화는 복도에서 해 주세요.</p><p>노트북은 지정 좌석에서만 쓸 수 있습니다.</p></div>
         <div class="pr-box"><h3>바로 가기</h3><div class="pr-btns"><button class="btn-ghost" data-go="notice">공지사항</button><button class="btn-ghost" data-go="reserve">좌석 예약</button><button class="btn-ghost" data-go="lost">분실물 안내</button></div></div>
       </section>
+      <section class="pr-plans"><h2>이용권 비교</h2><p class="pr-lead">이용권마다 쓸 수 있는 기능과 한도가 다릅니다.</p>
+        <table class="pr-table"><thead><tr><th></th><th>일반 회원<span>무료</span></th><th>정회원<span>월 3,000원</span></th><th>연구 회원<span>월 8,000원</span></th></tr></thead>
+        <tbody><tr class="grp"><td colspan="4">사용 한도</td></tr>
+        <tr><th>대출 권수</th><td>3권</td><td>7권</td><td>15권</td></tr>
+        <tr><th>좌석 예약 시간</th><td>하루 2시간</td><td>하루 4시간</td><td>하루 8시간</td></tr>
+        <tr class="grp"><td colspan="4">포함 기능</td></tr>
+        <tr><th>좌석 예약</th><td>✓</td><td>✓</td><td>✓</td></tr>
+        <tr><th>전자책 열람</th><td>없음</td><td>✓</td><td>✓</td></tr>
+        <tr><th>그룹 스터디룸 예약</th><td>없음</td><td>없음</td><td>✓</td></tr>
+        <tr><th>복사 할인</th><td>없음</td><td>✓</td><td>✓</td></tr></tbody></table></section>
+      <section class="pr-faq"><h2>자주 묻는 질문</h2>
+        <div class="pr-q"><h3>이용권은 언제 바꿀 수 있나요?</h3><p>매달 1일에 바뀝니다. 바꾸려면 전달 말일까지 신청해 주세요.</p></div>
+        <div class="pr-q"><h3>졸업생도 이용할 수 있나요?</h3><p>졸업생은 일반 회원으로만 이용할 수 있습니다.</p></div></section>
       <footer class="footer"><span class="brand">${esc(brand)}</span><span>연습용 가상 페이지입니다.</span></footer>
     </div>`;
   };
