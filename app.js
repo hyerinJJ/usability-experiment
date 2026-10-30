@@ -229,23 +229,23 @@
     }
 
     // AI 생성 지각도와 주관식(모든 조건이 끝난 뒤)
+    const thumb = (p) => `<div class="thumb" aria-hidden="true"><div class="thumb-in">${window.renderCondition(p.service, p.condition)}</div></div>`;
     screen(`<h1>마지막 질문</h1>
-      <p>방금 본 네 페이지가 각각 AI가 만든 것 같다고 느낀 정도를 골라 주세요.</p>
-      ${plan.map((p) => { const v = window.SERVICES[p.service]; return `<fieldset data-q="ai_${p.position}"><legend>${p.position}번째 페이지: ${esc(v.brand)} (${esc(v.category)})</legend>${likert("ai_" + p.position, ["전혀 아니다", "", "", "", "", "", "매우 그렇다"])}</fieldset>`; }).join("")}
-      <fieldset><legend>네 페이지 중 정보를 찾기 가장 어려웠던 것은 무엇이었나요?</legend><textarea id="open1"></textarea></fieldset>
-      <fieldset><legend>그 정보가 찾기 어려웠던 이유는 무엇이었나요?</legend><textarea id="open2"></textarea></fieldset>
+      <p>지금까지 본 네 페이지입니다. 페이지마다 <strong>AI가 만든 것 같다고 느낀 정도</strong>를 골라 주세요.</p>
+      <div class="recall">${plan.map((p) => { const v = window.SERVICES[p.service]; return `<fieldset data-q="ai_${p.position}" class="recall-item">${thumb(p)}<div><p class="rlabel">${p.position}번째: ${esc(v.brand)} (${esc(v.category)})</p>${likert("ai_" + p.position, ["전혀 아니다", "", "", "", "", "", "매우 그렇다"])}</div></fieldset>`; }).join("")}</div>
+      <fieldset data-q="hardest"><legend>네 페이지 중 원하는 정보를 찾기 가장 어려웠던 페이지는 어디였나요?</legend>
+        ${plan.map((p) => { const v = window.SERVICES[p.service]; return `<label><input type="radio" name="hardest" value="${p.position}"> ${p.position}번째: ${esc(v.brand)}</label>`; }).join(" &nbsp; ")}
+        &nbsp; <label><input type="radio" name="hardest" value="0"> 비슷했음</label></fieldset>
+      <fieldset><legend>그렇게 고른 이유를 짧게 적어 주세요. (선택)</legend><textarea id="open2" placeholder="예: 요금이 어디 있는지 한눈에 안 보였어요"></textarea></fieldset>
       ${pilot ? `<fieldset><legend>[파일럿] 진행하면서 헷갈렸던 점, 너무 쉽거나 어려웠던 과업, 걸린 시간에 대한 느낌을 자유롭게 적어 주세요.</legend><textarea id="pilotfb"></textarea></fieldset>` : ""}
       <div class="err"></div><button class="primary" id="go">제출</button>`);
-    await waitValid(plan.map((p) => "ai_" + p.position), () => {
-      const ok = ["open1", "open2"].every((id) => root.querySelector("#" + id).value.trim().length > 0);
-      ["open1", "open2"].forEach((id) => root.querySelector("#" + id).closest("fieldset").classList.toggle("missing", !root.querySelector("#" + id).value.trim()));
-      return ok;
-    });
+    await waitValid([...plan.map((p) => "ai_" + p.position), "hardest"]);
     plan.forEach((p) => {
       const r = { kind: "ai", position: p.position, condition: p.condition, service: p.service, ai_rating: +val("ai_" + p.position) };
       backup.surveys.push(r); send("survey", s, r);
     });
-    const open = { kind: "open", position: 0, open1: root.querySelector("#open1").value.trim(), open2: root.querySelector("#open2").value.trim() };
+    const hp = +val("hardest"); const hs = plan.find((p) => p.position === hp);
+    const open = { kind: "open", position: 0, condition: hs ? hs.condition : "", service: hs ? hs.service : "", open1: hs ? `${hp}번째 ${window.SERVICES[hs.service].brand}` : "비슷했음", open2: root.querySelector("#open2").value.trim() };
     backup.surveys.push(open); send("survey", s, open);
     const total = Math.round((Date.now() - s.t0) / 1000);
     send("finish", s, { total_sec: total, pilot_feedback: pilot ? root.querySelector("#pilotfb").value.trim() : "" });

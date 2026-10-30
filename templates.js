@@ -96,30 +96,33 @@
   // ---------- 위계 설계형: 같은 스타일, 배치만 위계 원칙으로
   //  E2 -> 중요도에 따라 카드 크기 차등, E3 -> 묶음 안 간격 < 묶음 사이 간격, E4 -> 내용에 맞는 형식(비교표, 목록), 왼쪽 정렬로 읽기 시작점 고정
   function renderH(svc, c) {
-    const head = (k, h, p) => `<div class="hi-head">${kicker(k)}<h2>${esc(h)}</h2><p>${esc(p)}</p></div>`;
+    // 섹션마다 왼쪽에 제목, 오른쪽에 내용(편집형 2단). 카드 장식 대신 글자 크기와 선으로 위계를 만든다.
+    const row = (id, k, h, p, body, cls = "") => `
+        <section class="hi-row ${cls}" id="${id}">
+          <div class="hi-label">${kicker(k)}<h2>${esc(h)}</h2><p>${esc(p)}</p></div>
+          <div class="hi-body">${body}</div>
+        </section>`;
     const f = c.features.items;
     return `
       <div class="page hi" style="--blue:${ACCENT[svc.key]}">
         ${nav(svc.brand)}
         ${hero(svc, c)}
-        <section class="hi-sec" id="features">${head("핵심 기능", c.features.heading, c.features.lead)}
-          <div class="hi-feat">
-            <article class="feature main"><div class="feature-icon">${ICONS[0]}</div><h3>${esc(f[0].title)}</h3><p>${esc(f[0].body)}</p></article>
-            <div class="feat-side">${f.slice(1).map((x, i) => `<article class="feature small"><div class="feature-icon">${ICONS[i + 1]}</div><div><h3>${esc(x.title)}</h3><p>${esc(x.body)}</p></div></article>`).join("")}</div>
-          </div></section>
-        <section class="hi-sec tight how" id="how">${head("작동 방식", c.steps.heading, c.steps.lead)}
-          <ol class="hi-steps">${c.steps.items.map((s, i) => `<li><span class="step-no">0${i + 1}</span><div><h3>${esc(s.title)}</h3><p>${esc(s.body)}</p></div></li>`).join("")}</ol></section>
-        <section class="hi-sec" id="pricing">${head("요금제", c.pricing.heading, c.pricing.lead)}
+        ${row("features", "핵심 기능", c.features.heading, c.features.lead, `
+          <div class="hi-lead-feat"><span class="hi-n">01</span><h3>${esc(f[0].title)}</h3><p>${esc(f[0].body)}</p></div>
+          <div class="hi-sub-feats">${f.slice(1).map((x, i) => `<div><span class="hi-n">0${i + 2}</span><h3>${esc(x.title)}</h3><p>${esc(x.body)}</p></div>`).join("")}</div>`)}
+        ${row("how", "작동 방식", c.steps.heading, c.steps.lead, `
+          <ol class="hi-steps">${c.steps.items.map((s, i) => `<li><span class="hi-n">${i + 1}</span><b>${esc(s.title)}</b><span>${esc(s.body)}</span></li>`).join("")}</ol>`, "tight")}
+        ${row("pricing", "요금제", c.pricing.heading, c.pricing.lead, `
           <table class="hi-table">
-            <thead><tr><th></th>${c.pricing.plans.map((p) => `<th>${esc(p.name)}</th>`).join("")}</tr></thead>
+            <thead><tr>${c.pricing.plans.map((p) => `<th>${esc(p.name)}</th>`).join("")}</tr></thead>
             <tbody>
-              <tr class="key"><th>요금</th>${c.pricing.plans.map((p) => `<td>${esc(p.label)}</td>`).join("")}</tr>
-              <tr><th>내용</th>${c.pricing.plans.map((p) => `<td>${esc(p.body)}</td>`).join("")}</tr>
-              <tr><th></th>${c.pricing.plans.map(() => `<td><button class="plan-btn" data-go="trial">시작하기</button></td>`).join("")}</tr>
+              <tr class="key">${c.pricing.plans.map((p) => `<td>${esc(p.label)}</td>`).join("")}</tr>
+              <tr>${c.pricing.plans.map((p) => `<td>${esc(p.body)}</td>`).join("")}</tr>
+              <tr class="act">${c.pricing.plans.map(() => `<td><button class="hi-link" data-go="trial">시작하기 →</button></td>`).join("")}</tr>
             </tbody>
-          </table></section>
-        <section class="hi-sec" id="faq">${head("FAQ", c.faq.heading, c.faq.lead)}
-          <dl class="hi-faq">${c.faq.items.map((i) => `<dt>${esc(i.q)}</dt><dd>${esc(i.a)}</dd>`).join("")}</dl></section>
+          </table>`)}
+        ${row("faq", "FAQ", c.faq.heading, c.faq.lead, `
+          <dl class="hi-faq">${c.faq.items.map((i) => `<div><dt>${esc(i.q)}</dt><dd>${esc(i.a)}</dd></div>`).join("")}</dl>`)}
         ${cta(c)}
         ${footer(svc.brand)}
       </div>`;
@@ -140,29 +143,27 @@
   }
 
   // 연습 페이지: 두 템플릿과 다른 단순한 문서형 화면
-  const pnav = (brand) => `<header class="nav"><span class="brand">${esc(brand)}</span></header>`;
+  const pnav = (brand) => `<header class="nav"><span class="brand"><span class="brand-mark">한</span>${esc(brand)}</span><nav class="nav-links"><a href="#" data-nolink>이용 안내</a><a href="#" data-nolink>공지사항</a></nav></header>`;
   window.renderPractice = function (view) {
     const brand = window.PRACTICE.brand;
-    if (view === "reserve") return `<div class="page sub">${pnav(brand)}<div class="sub-body">
+    if (view === "reserve") return `<div class="page sub" style="--blue:#5b6b7f">${pnav(brand)}<div class="sub-body">
       <button class="btn-ghost back" data-back>← 이전 화면으로</button>
       <h1>좌석 예약</h1><p>원하는 열람실과 시간을 고르면 좌석이 예약됩니다.</p></div></div>`;
-    return `<div class="page practice">${pnav(brand)}
-      <div class="pr-body">
-        <h1>한빛 도서관 열람실 안내</h1>
-        <p>한빛 도서관 열람실은 재학생이면 누구나 이용할 수 있습니다. 좌석은 하루 최대 4시간까지 예약할 수 있으며, 예약 후 15분 안에 입실하지 않으면 자동으로 취소됩니다.</p>
-        <h2>운영 시간</h2>
-        <p>평일에는 08:00부터 22:00까지 운영합니다. 주말과 공휴일에는 10:00부터 17:00까지 운영하며, 시험 기간에는 별도로 공지합니다.</p>
-        <h2>이용 규칙</h2>
-        <p>열람실 안에서는 음식물을 먹을 수 없고, 통화는 복도에서 해 주세요. 노트북은 지정된 좌석에서만 사용할 수 있습니다.</p>
-        <h2>예약</h2>
-        <p>좌석 예약은 아래 버튼에서 할 수 있습니다.</p>
-        <div class="pr-btns"><button class="btn-ghost" data-go="notice">공지사항</button><button class="btn-ghost" data-go="reserve">좌석 예약</button><button class="btn-ghost" data-go="lost">분실물 안내</button></div>
-      </div></div>`;
+    return `<div class="page practice" style="--blue:#5b6b7f">${pnav(brand)}
+      <section class="pr-hero"><span class="eyebrow"><i></i> 학생 서비스</span><h1>한빛 도서관 열람실</h1>
+        <p class="hero-copy">재학생이면 누구나 이용할 수 있는 열람실입니다. 좌석은 하루 최대 4시간까지 예약할 수 있고, 예약 후 15분 안에 입실하지 않으면 자동으로 취소됩니다.</p></section>
+      <section class="pr-grid">
+        <div class="pr-box"><h3>운영 시간</h3><p>평일 08:00부터 22:00까지</p><p>주말과 공휴일 10:00부터 17:00까지</p><p class="pr-note">시험 기간에는 별도로 공지합니다.</p></div>
+        <div class="pr-box"><h3>이용 규칙</h3><p>열람실 안에서는 음식물을 먹을 수 없습니다.</p><p>통화는 복도에서 해 주세요.</p><p>노트북은 지정 좌석에서만 쓸 수 있습니다.</p></div>
+        <div class="pr-box"><h3>바로 가기</h3><div class="pr-btns"><button class="btn-ghost" data-go="notice">공지사항</button><button class="btn-ghost" data-go="reserve">좌석 예약</button><button class="btn-ghost" data-go="lost">분실물 안내</button></div></div>
+      </section>
+      <footer class="footer"><span class="brand">${esc(brand)}</span><span>연습용 가상 페이지입니다.</span></footer>
+    </div>`;
   };
   window.renderPracticeSub = function (view) {
     if (view === "reserve" || view === "main") return window.renderPractice(view);
     const t = { notice: "공지사항", lost: "분실물 안내" }[view];
-    return `<div class="page sub">${pnav(window.PRACTICE.brand)}<div class="sub-body">
+    return `<div class="page sub" style="--blue:#5b6b7f">${pnav(window.PRACTICE.brand)}<div class="sub-body">
       <button class="btn-ghost back" data-back>← 이전 화면으로</button><h1>${t}</h1><p>등록된 글이 없습니다.</p></div></div>`;
   };
 

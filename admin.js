@@ -184,7 +184,7 @@
             <p class="note">${c ? `퀴즈 ${c.quiz_total}/3 (문항별 ${c.quiz1}, ${c.quiz2}, ${c.quiz3}) &nbsp; SUS ${esc(c.sus_score)}점 (응답 ${esc(c.sus_items)})` : "퀴즈와 SUS 응답 없음"}${a ? ` &nbsp; AI 생성 지각도 ${esc(a.ai_rating)}/7` : ""}${ex ? ` &nbsp; 둘러보기 스크롤 ${esc(ex.explore_scroll_pct)}%` : ""}</p>`;
         }).join("")}
         <h3>주관식 응답</h3>
-        ${open ? `<div class="fb">가장 어려웠던 정보: ${esc(open.open1)}\n이유: ${esc(open.open2)}</div>` : '<p class="note">응답 없음</p>'}
+        ${open ? `<div class="fb">가장 어려웠던 페이지: ${esc(open.open1)}${open.condition ? ` (${esc(open.condition)})` : ""}\n이유: ${esc(open.open2)}</div>` : '<p class="note">응답 없음</p>'}
         ${p.pilot_feedback ? `<h3>파일럿 의견</h3><div class="fb">${esc(p.pilot_feedback)}</div>` : ""}
       </div>`;
     $("#dclose").addEventListener("click", () => { openPid = null; $("#detail").innerHTML = ""; });
@@ -258,7 +258,7 @@
       <h3>파일럿 참가자 의견</h3>
       ${P.filter((p) => p.pilot_feedback).map((p) => `<div class="fb"><b>${esc(p.pid)}</b> (${p.total_sec ? (p.total_sec / 60).toFixed(1) + "분" : "미완료"})\n${esc(p.pilot_feedback)}</div>`).join("") || '<p class="note">아직 없습니다.</p>'}
       <h3>주관식 응답</h3>
-      ${S.filter((s) => s.kind === "open").map((s) => `<div class="fb"><b>${esc(s.pid)}</b>\n가장 어려웠던 정보: ${esc(s.open1)}\n이유: ${esc(s.open2)}</div>`).join("") || '<p class="note">아직 없습니다.</p>'}
+      ${S.filter((s) => s.kind === "open").map((s) => `<div class="fb"><b>${esc(s.pid)}</b>\n가장 어려웠던 페이지: ${esc(s.open1)}${s.condition ? ` (${esc(s.condition)})` : ""}\n이유: ${esc(s.open2)}</div>`).join("") || '<p class="note">아직 없습니다.</p>'}
       <h3>파일럿 자료 정리</h3>
       <p class="note">파일럿을 마치고 본 실험을 시작하기 전에 지울 수 있습니다. 지우기 전에 내려받기 탭에서 파일럿 자료를 받아 두세요(최종 보고서의 예비 연구에 씁니다).</p>
       <button class="b danger" id="delpilot">파일럿 자료 모두 삭제</button>`;
@@ -306,7 +306,7 @@
       cond: () => save(`conditions_${day}.csv`, toCSV(D.surveys.filter((s) => main(s) && s.kind === "condition").map(sWith), ["pid", "cell", "position", "condition", "visual", "copy", "service", "quiz1", "quiz2", "quiz3", "quiz_total", "sus_items", "sus_score", "include"])),
       explore: () => save(`explore_${day}.csv`, toCSV(D.surveys.filter((s) => main(s) && s.kind === "explore").map(sWith), ["pid", "cell", "position", "condition", "visual", "copy", "service", "explore_scroll_pct", "include"])),
       ai: () => save(`ai_ratings_${day}.csv`, toCSV(D.surveys.filter((s) => main(s) && s.kind === "ai").map(sWith), ["pid", "cell", "position", "condition", "visual", "copy", "service", "ai_rating", "include"])),
-      open: () => save(`open_${day}.csv`, toCSV(D.surveys.filter((s) => main(s) && s.kind === "open").map(sWith), ["pid", "cell", "open1", "open2", "include"])),
+      open: () => save(`open_${day}.csv`, toCSV(D.surveys.filter((s) => main(s) && s.kind === "open").map(sWith), ["pid", "cell", "open1", "condition", "visual", "copy", "service", "open2", "include"])),
       people: () => save(`participants_${day}.csv`, toCSV(D.participants.filter((p) => !p.pilot).map(strip))),
       ptasks: () => save(`pilot_tasks_${day}.csv`, toCSV(D.tasks.filter(pil).map(withFlags), TK)),
       psurveys: () => save(`pilot_surveys_${day}.csv`, toCSV(D.surveys.filter(pil))),

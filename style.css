@@ -96,42 +96,38 @@ h3{margin:0}
 .ai .plan-btn{margin-top:18px}
 .ai .faq{background:var(--pale)}
 
-/* 위계 설계형: 같은 스타일, 배치만 위계 원칙으로 */
-.hi .hi-sec{padding:0 0 128px}                       /* 묶음 사이 간격은 넓게 */
-.hi #features{padding-top:104px}
-.hi .hi-sec.tight{padding:64px 0 72px;margin-bottom:112px}
-.hi .hi-head{margin-bottom:20px;max-width:720px}     /* 제목과 내용 사이는 좁게, 왼쪽 정렬 */
-.hi .hi-head h2{font-size:34px;margin:6px 0 4px}
-.hi .hi-head p{color:var(--muted);font-size:15px}
-.hi .hi-feat{display:grid;grid-template-columns:1.5fr 1fr;gap:16px}   /* 중요도에 따라 카드 크기 차등 */
-.hi .feature{border:1px solid var(--line);border-radius:17px;background:#fff}
-.hi .feature.main{padding:40px;background:var(--tint);border-color:color-mix(in srgb,var(--blue) 18%,#fff);display:flex;flex-direction:column;justify-content:flex-end;min-height:300px}
-.hi .feature.main h3{font-size:28px;letter-spacing:-.9px;margin-bottom:10px}
-.hi .feature.main p{font-size:16px;color:#44516b}
-.hi .feat-side{display:grid;gap:16px}
-.hi .feature.small{padding:20px 22px;display:flex;gap:14px;align-items:flex-start}
-.hi .feature.small .feature-icon{margin:0;width:38px;height:38px;font-size:17px;border-radius:11px}
-.hi .feature.small h3{font-size:15px;margin-bottom:4px}
-.hi .feature.small p{font-size:13px}
-.hi .how .hi-head{max-width:none}
-.hi .hi-steps{list-style:none;padding:0;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:24px;border-top:2px solid var(--ink)}
-.hi .hi-steps li{display:flex;gap:12px;padding-top:16px}
-.hi .hi-steps .step-no{font-weight:800;color:var(--blue);font-size:14px;padding-top:1px}
-.hi .hi-steps h3{font-size:15px;margin-bottom:2px}
-.hi .hi-steps p{font-size:13px;color:var(--muted)}
-.hi .hi-table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);border-radius:17px;overflow:hidden}   /* 요금제는 비교표, 요금 줄을 가장 크게 */
-.hi .hi-table th,.hi .hi-table td{padding:16px 22px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
-.hi .hi-table thead th{font-size:18px;background:#f8faff}
-.hi .hi-table tbody th{width:96px;color:var(--muted);font-weight:600;font-size:13px}
-.hi .hi-table tr.key td{font-size:21px;font-weight:800;color:var(--ink);background:var(--tint);letter-spacing:-.4px}
-.hi .hi-table tr.key th{background:var(--tint)}
-.hi .hi-table td{font-size:13px;color:var(--muted)}
-.hi .hi-table tr:last-child td,.hi .hi-table tr:last-child th{border-bottom:0}
-.hi .hi-table .plan-btn{margin:0}
-.hi .hi-faq{margin:0;border-top:2px solid var(--ink)}       /* 자주 묻는 질문은 질문을 크게 한 목록 */
-.hi .hi-faq dt{font-weight:800;font-size:19px;padding-top:20px;letter-spacing:-.3px}
-.hi .hi-faq dd{margin:6px 0 0;padding-bottom:20px;border-bottom:1px solid var(--line);color:var(--muted);font-size:14px}
-.hi .cta{padding-top:0}
+/* 위계 설계형: 같은 색, 글꼴, 첫 화면, 목업, 신청 영역. 본문은 왼쪽 제목 + 오른쪽 내용의 편집형 2단,
+   카드와 아이콘 장식 없이 글자 크기, 굵기, 선으로 중요도를 구분하고 섹션마다 간격을 다르게 둔다 */
+.hi .hi-row{display:grid;grid-template-columns:300px 1fr;gap:64px;padding:56px 0 120px;border-top:1px solid var(--ink)}
+.hi #features{margin-top:104px}
+.hi .hi-row.tight{padding:40px 0 72px}
+.hi .hi-label h2{font-size:30px;line-height:1.25;letter-spacing:-1px;margin:8px 0 10px}
+.hi .hi-label p{font-size:14px;color:var(--muted);line-height:1.7}
+.hi .hi-n{display:block;font-size:12px;font-weight:800;color:var(--blue);letter-spacing:.06em;margin-bottom:8px}
+.hi .hi-lead-feat{padding-bottom:32px;border-bottom:1px solid var(--line)}
+.hi .hi-lead-feat h3{font-size:34px;letter-spacing:-1.3px;line-height:1.2;margin-bottom:12px}
+.hi .hi-lead-feat p{font-size:17px;color:#44516b;max-width:560px;line-height:1.7}
+.hi .hi-sub-feats{display:grid;grid-template-columns:1fr 1fr;gap:40px;padding-top:28px}
+.hi .hi-sub-feats h3{font-size:18px;letter-spacing:-.4px;margin-bottom:6px}
+.hi .hi-sub-feats p{font-size:14px;color:var(--muted);line-height:1.7}
+.hi .hi-steps{list-style:none;margin:0;padding:0;display:grid;gap:0}
+.hi .hi-steps li{display:grid;grid-template-columns:40px 180px 1fr;align-items:baseline;padding:14px 0;border-bottom:1px solid var(--line)}
+.hi .hi-steps .hi-n{margin:0;font-size:14px}
+.hi .hi-steps b{font-size:16px}
+.hi .hi-steps span:last-child{font-size:14px;color:var(--muted)}
+.hi .hi-table{width:100%;border-collapse:collapse}
+.hi .hi-table th,.hi .hi-table td{padding:14px 18px 14px 0;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+.hi .hi-table thead th{font-size:15px;font-weight:700;color:var(--muted);border-bottom:2px solid var(--ink)}
+.hi .hi-table tr.key td{font-size:24px;font-weight:800;color:var(--ink);letter-spacing:-.6px;line-height:1.35;padding:20px 18px 20px 0}
+.hi .hi-table td{font-size:14px;color:var(--muted)}
+.hi .hi-table tr.act td{border-bottom:0}
+.hi .hi-link{background:none;border:0;padding:0;font-weight:800;color:var(--blue);font-size:14px}
+.hi .hi-faq{margin:0}
+.hi .hi-faq div{padding:18px 0;border-bottom:1px solid var(--line)}
+.hi .hi-faq div:first-child{padding-top:0}
+.hi .hi-faq dt{font-weight:800;font-size:20px;letter-spacing:-.4px;color:var(--ink)}
+.hi .hi-faq dd{margin:6px 0 0;color:var(--muted);font-size:15px}
+.hi .cta{padding-top:24px}
 
 /* 하위 화면, 연습 */
 .btn-ghost{font:inherit;font-size:14px;font-weight:700;padding:10px 16px;border-radius:10px;border:1px solid #dbe2f2;background:#fff;color:var(--ink)}
@@ -141,11 +137,14 @@ h3{margin:0}
 .fake-form{display:grid;gap:14px;margin-top:28px}
 .fake-form label{display:grid;gap:6px;color:var(--muted);font-size:14px}
 .fake-form input{padding:10px;border:1px solid var(--line);border-radius:8px}
-.practice .pr-body{max-width:760px;padding:48px 0}
-.practice h1{font-size:32px;margin-bottom:16px}
-.practice h2{font-size:20px;margin:28px 0 8px}
-.practice p{color:var(--muted);line-height:1.7}
-.pr-btns{display:flex;gap:10px;margin-top:12px}
+.practice .pr-hero{padding:56px 0 40px}
+.practice .pr-hero h1{font-size:44px;letter-spacing:-1.8px;margin:18px 0 14px}
+.practice .pr-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;padding-bottom:80px}
+.practice .pr-box{border:1px solid var(--line);border-radius:16px;padding:24px;background:#fff}
+.practice .pr-box h3{font-size:17px;margin-bottom:10px}
+.practice .pr-box p{color:var(--muted);font-size:14px;line-height:1.8}
+.practice .pr-note{font-size:12px!important;margin-top:6px}
+.pr-btns{display:flex;flex-direction:column;gap:8px}
 
 /* 실험 진행 화면 */
 .shell { position:fixed; inset:0; display:flex; }
@@ -185,3 +184,11 @@ h3{margin:0}
 .panel .practice-tag { font-size:12px; color:#7a5200; background:#fff4d6; border-radius:6px; padding:2px 8px; align-self:flex-start; }
 
 .panel .note-sm { font-size:13px; color:var(--muted); line-height:1.6; }
+
+/* 마지막 질문: 페이지 썸네일 */
+.screen .recall { display:grid; gap:10px; margin:12px 0 16px; }
+.screen .recall-item { display:grid; grid-template-columns:220px 1fr; gap:20px; align-items:center; }
+.screen .recall-item .rlabel { font-weight:700; color:var(--ink); margin-bottom:6px; }
+.screen .recall-item .likert { flex-wrap:wrap; gap:10px; }
+.thumb { width:220px; height:130px; flex:none; overflow:hidden; border:1px solid var(--line); border-radius:10px; background:#fff; position:relative; }
+.thumb-in { width:1440px; transform:scale(.1528); transform-origin:0 0; pointer-events:none; }
