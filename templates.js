@@ -62,15 +62,26 @@
     </div></section>`;
 
   // 마지막 신청 영역(T3 목표인 데모 신청은 여기에만 있다)
-  const cta = (c) => `
+  // 행동 선택지: 이름과 설명 문장은 두 조건이 같고, 배치와 위계만 다르다(T3 목표는 데모 신청)
+  const ACTIONS = [
+    { go: "trial", name: "무료 체험", desc: "가입하고 바로 직접 써 봅니다." },
+    { go: "contact", name: "상담 문의", desc: "요금과 도입 조건을 담당자와 이야기합니다." },
+    { go: "demo", name: "데모 신청", desc: "담당자가 화면을 보여 주며 사용법을 30분 동안 설명합니다." }
+  ];
+  // AI 전형형: 맨 아래에만, 같은 모양 카드 3개를 가운데 정렬로 나란히(E2, E4)
+  const ctaAI = (c) => `
+    <section class="section cta-ai" id="start">
+      <div class="section-head">${kicker("시작하기")}<h2>${esc(c.cta.heading)}</h2><p>${esc(c.cta.body)}</p></div>
+      <div class="actions">${ACTIONS.map((a, i) => `<article class="feature"><div class="feature-icon">${["→", "☏", "▶"][i]}</div><h3>${a.name}</h3><p>${a.desc}</p><button class="plan-btn" data-go="${a.go}">${a.name}</button></article>`).join("")}</div>
+    </section>`;
+  // 위계 설계형: 주 행동은 크게, 보조 행동은 설명과 함께 목록으로(E2), 데모 신청은 작동 방식 옆에도 둔다(E3 근접성)
+  const ctaH = (c) => `
     <section class="cta"><div class="cta-box">
-      <div class="cta-copy">${kicker("시작하기")}<h2>${esc(c.cta.heading)}</h2><p>${esc(c.cta.body)}</p></div>
-      <div class="signup">
-        <button class="choice-btn" data-go="trial"><b>무료 체험</b><span>바로 써 보기</span></button>
-        <button class="choice-btn" data-go="contact"><b>상담 문의</b><span>담당자와 이야기하기</span></button>
-        <button class="choice-btn" data-go="demo"><b>데모 신청</b><span>화면으로 둘러보기</span></button>
-      </div>
+      <div class="cta-copy">${kicker("시작하기")}<h2>${esc(c.cta.heading)}</h2><p>${esc(c.cta.body)}</p>
+        <button class="btn cta-main" data-go="trial">무료 체험 →</button><p class="cta-main-desc">${ACTIONS[0].desc}</p></div>
+      <div class="signup">${ACTIONS.slice(1).map((a) => `<button class="choice-btn" data-go="${a.go}"><b>${a.name}</b><span>${a.desc}</span></button>`).join("")}</div>
     </div></section>`;
+  const demoInline = () => `<div class="hi-inline-cta"><div><b>직접 보고 결정하고 싶다면</b><span>${ACTIONS[2].desc}</span></div><button class="btn-ghost" data-go="demo">데모 신청 →</button></div>`;
   const footer = (brand) => `<footer class="footer"><span class="brand"><span class="brand-mark">↗</span>${esc(brand)}</span><span>© 2026 ${esc(brand)}. 가상의 서비스입니다.</span></footer>`;
 
   // ---------- AI 전형형: 원본 구조(E2 균일한 카드 그리드, E3 섹션 간 동일 여백, E4 가운데 제목 + 같은 카드 그리드를 모든 섹션에 반복)
@@ -91,7 +102,7 @@
             <button class="plan-btn" data-go="trial">시작하기</button></article>`).join("")}</div></section>
         <section class="section faq" id="faq">${head("FAQ", c.faq.heading, c.faq.lead)}
           <div class="faqs">${c.faq.items.map((i) => `<article class="feature"><div class="feature-icon">?</div><h3>${esc(i.q)}</h3><p>${esc(i.a)}</p></article>`).join("")}</div></section>
-        ${cta(c)}
+        ${ctaAI(c)}
         ${footer(svc.brand)}
       </div>`;
   }
@@ -115,7 +126,7 @@
           <div class="hi-lead-feats">${f.slice(0, 2).map((x, i) => `<div><span class="hi-n">0${i + 1}</span><h3>${esc(x.title)}</h3><p>${esc(x.body)}</p></div>`).join("")}</div>
           <div class="hi-sub-feats">${f.slice(2).map((x, i) => `<div><span class="hi-n">0${i + 3}</span><h3>${esc(x.title)}</h3><p>${esc(x.body)}</p></div>`).join("")}</div>`)}
         ${row("how", "작동 방식", c.steps.heading, c.steps.lead, `
-          <ol class="hi-steps">${c.steps.items.map((s, i) => `<li><span class="hi-n">${i + 1}</span><b>${esc(s.title)}</b><span>${esc(s.body)}</span></li>`).join("")}</ol>`, "tight")}
+          <ol class="hi-steps">${c.steps.items.map((s, i) => `<li><span class="hi-n">${i + 1}</span><b>${esc(s.title)}</b><span>${esc(s.body)}</span></li>`).join("")}</ol>${demoInline()}`, "tight")}
         ${row("pricing", "요금제", P.heading, P.lead, `
           <table class="hi-table">
             <thead><tr><th></th>${P.plans.map((p) => `<th>${esc(p.name)}</th>`).join("")}</tr></thead>
@@ -132,7 +143,7 @@
         ${row("faq", "FAQ", Q.heading, Q.lead, Q.groups.map((g, gi) => `
           <div class="hi-faq-group"><p class="hi-group">${esc(Q.groupNames[gi])}</p>
           <dl class="hi-faq">${g.map((i) => `<div><dt>${esc(Q.items[i].q)}</dt><dd>${esc(Q.items[i].a)}</dd></div>`).join("")}</dl></div>`).join(""))}
-        ${cta(c)}
+        ${ctaH(c)}
         ${footer(svc.brand)}
       </div>`;
   }
