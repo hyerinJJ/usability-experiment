@@ -360,3 +360,19 @@ h3{margin:0}
 .page.ai .cta-box{background:linear-gradient(125deg,color-mix(in srgb,var(--btn) 60%,var(--blue)),var(--btn));color:var(--btn-ink)}
 .page.ai .cta-copy h2{color:var(--btn-ink)}
 .page.ai .cta-copy p,.page.ai .cta-copy .kicker{color:color-mix(in srgb,var(--btn-ink) 80%,transparent)}
+
+/* 위계 설계형 길잡이: 첫 화면 아래 페이지 구성, 섹션 라벨을 제목 위 첫 줄로 또렷하게, 섹션 안 묶음 라벨 */
+.hi .hi-toc{display:flex;align-items:baseline;gap:32px;padding:20px 0 24px;margin-top:40px;border-top:1px solid #c9d0db}
+.hi .hi-toc-h{font-size:14px;font-weight:600;color:var(--sub);flex:none}
+.hi .hi-toc ol{list-style:none;margin:0;padding:0;display:flex;gap:28px;flex-wrap:wrap}
+.hi .hi-toc li{font-size:16px;font-weight:600;color:var(--ink)}
+.hi .hi-toc li span{color:var(--sub);font-weight:500;margin-right:6px}
+.hi #features{margin-top:0}
+.hi .hi-secno{font-size:16px;font-weight:600;color:var(--sub);margin:0 6px 0 0}
+.hi .kicker{font-size:16px;font-weight:700;color:var(--ink)}
+.hi .hi-label h2{margin-top:14px}
+.hi .hi-sub{font-size:14px;font-weight:600;color:var(--sub);margin:0 0 14px}
+.hi .hi-sub-feats{padding-top:0}
+.hi .hi-lead-feats{margin-bottom:36px}
+.hi .hi-lead-feats+.hi-sub{margin-top:0}
+.hi .hi-table tbody tr.grp:first-child th{padding-top:0}

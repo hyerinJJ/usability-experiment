@@ -127,9 +127,12 @@
       <div class="page hi" style="--blue:${ACCENT[svc.key]}">
         ${nav(svc.brand)}
         ${hero(svc, c)}
+        <nav class="hi-toc" aria-label="이 페이지의 구성"><span class="hi-toc-h">이 페이지의 구성</span><ol>${["핵심 기능", "작동 방식", "요금제", "FAQ", "시작하기"].map((x, i) => `<li><span>0${i + 1}</span>${x}</li>`).join("")}</ol></nav>
         ${row("features", "핵심 기능", c.features.heading, c.features.lead, `
-          <div class="hi-lead-feats">${f.slice(0, 2).map((x, i) => `<div><span class="hi-n">0${i + 1}</span><h3>${esc(x.title)}</h3><p>${esc(x.body)}</p></div>`).join("")}</div>
-          <div class="hi-sub-feats">${f.slice(2).map((x, i) => `<div><span class="hi-n">0${i + 3}</span><h3>${esc(x.title)}</h3><p>${esc(x.body)}</p></div>`).join("")}</div>`)}
+          <p class="hi-sub">주요 기능</p>
+          <div class="hi-lead-feats">${f.slice(0, 2).map((x, i) => `<div><h3>${esc(x.title)}</h3><p>${esc(x.body)}</p></div>`).join("")}</div>
+          <p class="hi-sub">그 밖의 기능</p>
+          <div class="hi-sub-feats">${f.slice(2).map((x, i) => `<div><h3>${esc(x.title)}</h3><p>${esc(x.body)}</p></div>`).join("")}</div>`)}
         ${row("how", "작동 방식", c.steps.heading, c.steps.lead, `
           <ol class="hi-steps">${c.steps.items.map((s, i) => `<li><span class="hi-n">${i + 1}</span><b>${esc(s.title)}</b><span>${esc(s.body)}</span></li>`).join("")}</ol>`, "tight")}
         ${row("pricing", "요금제", P.heading, P.lead, `
