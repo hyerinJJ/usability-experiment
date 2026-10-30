@@ -55,7 +55,7 @@
         <span class="eyebrow"><i></i> ${esc(svc.category)}</span>
         <h1>${heroTitle(c.hero.title)}</h1>
         <p class="hero-copy">${esc(c.hero.body)}</p>
-        <div class="hero-actions"><button class="btn" data-go="contact">상담 문의 <span>→</span></button><a class="text-link" href="#" data-nolink>기능 살펴보기 ↓</a></div>
+        <div class="hero-actions"><button class="btn" data-go="contact">${esc(c.cta.actions[1].name)} <span>→</span></button><a class="text-link" href="#" data-nolink>기능 살펴보기 ↓</a></div>
         <p class="microcopy">가입은 1분이면 충분합니다.</p>
       </div>
       ${mockup(svc.key, svc.brand)}
@@ -63,24 +63,20 @@
 
   // 마지막 신청 영역(T3 목표인 데모 신청은 여기에만 있다)
   // 행동 선택지: 이름과 설명 문장은 두 조건이 같고, 배치와 위계만 다르다(T3 목표는 주 행동인 무료 체험)
-  const ACTIONS = [
-    { go: "trial", name: "무료 체험", desc: "가입하고 바로 직접 써 봅니다." },
-    { go: "contact", name: "상담 문의", desc: "요금과 도입 조건을 담당자와 이야기합니다." },
-    { go: "demo", name: "데모 신청", desc: "담당자가 화면을 보여 주며 사용법을 30분 동안 설명합니다." }
-  ];
+  // ACTIONS는 문구 조건별 내용 데이터(c.cta.actions)에서 가져온다
   // AI 전형형: 맨 아래에만, 같은 모양 카드 3개를 가운데 정렬로 나란히(E2, E4)
   const ctaAI = (c) => `
     <section class="section cta-ai" id="start">
       <div class="section-head">${kicker("시작하기")}<h2>${esc(c.cta.heading)}</h2><p>${esc(c.cta.body)}</p></div>
-      <div class="actions">${ACTIONS.map((a, i) => `<article class="feature"><div class="feature-icon">${["→", "☏", "▶"][i]}</div><h3>${a.name}</h3><p>${a.desc}</p><button class="plan-btn" data-go="${a.go}">${a.name}</button></article>`).join("")}</div>
+      <div class="actions">${c.cta.actions.map((a, i) => `<article class="feature"><div class="feature-icon">${["→", "☏", "▶"][i]}</div><h3>${a.name}</h3><p>${a.desc}</p><button class="plan-btn" data-go="${a.go}">${a.name}</button></article>`).join("")}</div>
     </section>`;
   // 위계 설계형: 주 행동(무료 체험)은 크게, 보조 행동은 설명과 함께 작은 목록으로(E2)
   const ctaH = (c) => `
     <section class="cta"><div class="cta-box">
       <div class="cta-copy">${kicker("시작하기")}<h2>${esc(c.cta.heading)}</h2><p>${esc(c.cta.body)}</p></div>
       <div class="cta-actions">
-        <div class="cta-primary"><b>${ACTIONS[0].name}</b><p>${ACTIONS[0].desc}</p><button class="btn cta-main" data-go="trial">${ACTIONS[0].name} →</button></div>
-        <div class="cta-secondary">${ACTIONS.slice(1).map((a) => `<button class="choice-btn" data-go="${a.go}"><b>${a.name}</b><span>${a.desc}</span></button>`).join("")}</div>
+        <div class="cta-primary"><b>${c.cta.actions[0].name}</b><p>${c.cta.actions[0].desc}</p><button class="btn cta-main" data-go="trial">${c.cta.actions[0].name} →</button></div>
+        <div class="cta-secondary">${c.cta.actions.slice(1).map((a) => `<button class="choice-btn" data-go="${a.go}"><b>${a.name}</b><span>${a.desc}</span></button>`).join("")}</div>
       </div>
     </div></section>`;
   const footer = (brand) => `<footer class="footer"><span class="brand"><span class="brand-mark">↗</span>${esc(brand)}</span><span>© 2026 ${esc(brand)}. 가상의 서비스입니다.</span></footer>`;
