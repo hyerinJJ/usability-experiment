@@ -227,3 +227,14 @@ h3{margin:0}
 .hi .hi-inline-cta b{display:block;font-size:16px;color:var(--ink);margin-bottom:2px}
 .hi .hi-inline-cta span{font-size:15px;color:var(--sub)}
 .hi .hi-inline-cta .btn-ghost{flex:none;min-height:44px;color:var(--blue);border-color:color-mix(in srgb,var(--blue) 40%,#fff)}
+
+/* 위계 설계형 신청 영역: 흰 배경 위에 주 행동만 색으로 강조 */
+.hi .cta-box{background:#fff;color:var(--ink);border:1px solid var(--line);box-shadow:0 10px 30px -18px rgba(30,45,70,.25)}
+.hi .cta-box:after{display:none}
+.hi .cta-copy .kicker{color:var(--blue)}
+.hi .cta-copy h2{color:var(--ink)}
+.hi .cta-copy p{color:var(--sub)}
+.hi .cta-main{background:var(--blue);color:#fff;box-shadow:0 8px 20px -8px var(--blue)}
+.hi .cta-main:hover{background:var(--blue-dark)}
+.hi .signup{box-shadow:none;border:0;padding:0;background:transparent}
+.hi .signup .choice-btn{background:#fff;border:1px solid var(--line)}
