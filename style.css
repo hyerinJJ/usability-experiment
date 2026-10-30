@@ -284,3 +284,39 @@ h3{margin:0}
 .hi .feature-icon{display:none}
 /* 요금표: 가격이 들어 있는 설명 줄도 본문과 같은 진한 색, 16px로(가독성 기준) */
 .hi .hi-table tr.desc td{font-size:16px;color:var(--txt);line-height:1.6}
+
+/* 위계 설계형 다듬기: 어두운 단색 첫 화면, 섹션별 단색 배경 교대, 표는 카드 안에 */
+.brand-init{display:none}
+.hi .brand-init{display:grid;place-items:center;width:30px;height:30px;border-radius:7px;background:var(--blue);color:#fff;font-size:15px;font-weight:800}
+.hi .brand{gap:10px}
+.hi .nav{border-bottom:0}
+.hi>.nav,.hi>.hero{background:#121a26;box-shadow:0 0 0 100vmax #121a26;clip-path:inset(0 -100vmax)}
+.hi .nav .brand{color:#fff}
+.hi .nav-links{color:#c9d1dd}
+.hi .nav-cta{background:transparent;color:#fff;border:1px solid #ffffff66}
+.hi .hero{padding:64px 0 88px;border-bottom:0}
+.hi .hero-grid{align-items:center;grid-template-columns:1fr 1.1fr}
+.hi .eyebrow{color:color-mix(in srgb,var(--blue) 45%,#fff)}
+.hi .hero h1{color:#fff;font-size:50px}
+.hi .hero-copy{color:#d5dbe5}
+.hi .text-link{color:#fff}
+.hi .microcopy{color:#9aa6b8}
+.hi .btn{background:var(--blue);color:#fff}
+.hi .app-frame{border:0;border-radius:10px;box-shadow:0 30px 60px -20px #000a}
+.hi .hi-row{border-top:0;padding:80px 0 88px}
+.hi #features{margin-top:0}
+.hi .hi-row.tight{padding:72px 0 80px}
+.hi #how,.hi #faq{background:#f5f6f8;box-shadow:0 0 0 100vmax #f5f6f8;clip-path:inset(0 -100vmax)}
+.hi .kicker{font-size:14px;letter-spacing:.02em}
+.hi .hi-label h2{font-size:30px}
+.hi .hi-lead-feats>div{border-top:3px solid var(--blue);padding-top:20px}
+.hi .hi-steps li{border-bottom:1px solid #e3e6eb}
+.hi .hi-steps .hi-n{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--blue);color:#fff;font-size:14px}
+.hi .hi-steps li{align-items:center}
+.hi #pricing .hi-body{background:#fff;border:1px solid #dfe3ea;border-radius:14px;padding:4px 28px 8px;box-shadow:0 2px 0 #eef0f4}
+.hi .hi-table thead th{border-bottom:2px solid var(--ink);padding-top:18px}
+.hi .hi-table tr.grp th{border-bottom:1px solid #cfd5df}
+.hi .hi-faq-group{background:#fff;border:1px solid #e3e6eb;border-radius:14px;padding:18px 28px 8px}
+.hi .hi-group{border-bottom:0;margin-bottom:0}
+.hi .hi-faq div:last-child{border-bottom:0}
+.hi .cta{padding:88px 0}
