@@ -5,7 +5,14 @@
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
   // 서비스별 브랜드 색(조건과 관계없이 서비스마다 고정)
-  const ACCENT = { schedule: "#4169f5", inventory: "#1f8a62", accounting: "#e0661b", support: "#7b4cf0" };
+  // 파스텔 톤: 버튼 배경(--btn)은 파스텔, 버튼 글자(--btn-ink)는 같은 계열의 진한 색, 글자 강조(--blue)는 채도를 낮춘 중간 톤
+  const PAL = {
+    schedule: ["#5a74d6", "#cdd9ff", "#1d2f6b"],
+    inventory: ["#3f8f72", "#c3ead6", "#16473a"],
+    accounting: ["#c77a45", "#ffdcc5", "#6a3411"],
+    support: ["#7a62d4", "#ddd3ff", "#33226f"]
+  };
+  const ACCENT = new Proxy({}, { get: (_, k) => { const p = PAL[k] || PAL.schedule; return `${p[0]};--btn:${p[1]};--btn-ink:${p[2]}`; } });
 
   // ---------- 두 조건 공통 요소(원본 페이지 그대로)
   const nav = (brand) => `
@@ -159,7 +166,7 @@
   };
   function renderSub(key, brand, svcKey) {
     const p = SUBPAGES[key];
-    return `<div class="page sub" style="--blue:${ACCENT[svcKey] || "#4169f5"}">${nav(brand)}<div class="sub-body">
+    return `<div class="page sub" style="--blue:${ACCENT[svcKey]}">${nav(brand)}<div class="sub-body">
       <button class="btn-ghost back" data-back>← 이전 화면으로</button>
       <h1>${esc(p.title)}</h1><p>${esc(p.body)}</p>
       <div class="fake-form"><label>이름<input disabled></label><label>이메일<input disabled></label></div></div></div>`;

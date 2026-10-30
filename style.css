@@ -352,3 +352,11 @@ h3{margin:0}
 .hi #start .cta-primary b{font-size:22px;font-weight:700}
 .hi #start .choice-btn b{font-size:17px;font-weight:600}
 .hi #start .cta-main{box-shadow:none}
+
+/* 파스텔 버튼(두 조건 공통) */
+.page{--btn:var(--blue);--btn-ink:#fff}
+.page .btn,.page .nav-cta,.page .brand-mark,.hi #start .cta-main,.hi .cta-main{background:var(--btn);color:var(--btn-ink);box-shadow:none}
+.page .btn:hover,.page .nav-cta:hover,.hi #start .cta-main:hover{background:color-mix(in srgb,var(--btn) 85%,var(--btn-ink))}
+.page.ai .cta-box{background:linear-gradient(125deg,color-mix(in srgb,var(--btn) 60%,var(--blue)),var(--btn));color:var(--btn-ink)}
+.page.ai .cta-copy h2{color:var(--btn-ink)}
+.page.ai .cta-copy p,.page.ai .cta-copy .kicker{color:color-mix(in srgb,var(--btn-ink) 80%,transparent)}
