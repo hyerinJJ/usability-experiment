@@ -209,13 +209,12 @@
           <table class="hi-table">
             <thead><tr><th></th>${P.plans.map((p) => `<th>${esc(p.name)}</th>`).join("")}</tr></thead>
             <tbody>
-              <tr class="grp"><th colspan="${P.plans.length + 1}"><span class="hi-stepno">1</span>인원과 한도 확인</th></tr>
-              ${P.limitNames.map((n, i) => `<tr><th>${esc(n)}</th>${P.plans.map((p) => `<td class="lim">${esc(p.limits[i])}</td>`).join("")}</tr>`).join("")}
-              <tr class="grp"><th colspan="${P.plans.length + 1}"><span class="hi-stepno">2</span>필요한 기능 확인</th></tr>
-              ${P.featNames.map((n, i) => `<tr><th>${esc(n)}</th>${P.plans.map((p) => `<td>${p.flags[i] ? yes : no}</td>`).join("")}</tr>`).join("")}
-              <tr class="grp"><th colspan="${P.plans.length + 1}"><span class="hi-stepno">3</span>월 요금 비교</th></tr>
               <tr class="key"><th>월 요금</th>${P.plans.map((p) => `<td>${esc(p.label)}</td>`).join("")}</tr>
               <tr class="desc"><th></th>${P.plans.map((p) => `<td>${esc(p.body)}</td>`).join("")}</tr>
+              <tr class="grp"><th colspan="${P.plans.length + 1}">사용 한도</th></tr>
+              ${P.limitNames.map((n, i) => `<tr><th>${esc(n)}</th>${P.plans.map((p) => `<td class="lim">${esc(p.limits[i])}</td>`).join("")}</tr>`).join("")}
+              <tr class="grp"><th colspan="${P.plans.length + 1}">포함 기능</th></tr>
+              ${P.featNames.map((n, i) => `<tr><th>${esc(n)}</th>${P.plans.map((p) => `<td>${p.flags[i] ? yes : no}</td>`).join("")}</tr>`).join("")}
               <tr class="act"><th></th>${P.plans.map(() => `<td><button class="hi-link" data-go="plan">시작하기 →</button></td>`).join("")}</tr>
             </tbody>
           </table>`)}

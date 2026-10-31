@@ -425,7 +425,6 @@ h3{margin:0}
 /* 위계 설계형 요금표: 고르는 순서(한도 → 기능 → 요금)대로 묶고 번호를 붙임, 줄무늬와 열 강조로 시선 추적 */
 .hi .hi-stepno{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--ink);color:#fff;font-size:12px;font-weight:700;margin-right:8px;vertical-align:1px}
 .hi .hi-table tr.grp th{color:var(--ink);font-size:15px}
-.hi .hi-table tbody tr:not(.grp):not(.act):not(.desc):not(.key):nth-child(even) td,.hi .hi-table tbody tr:not(.grp):not(.act):not(.desc):not(.key):nth-child(even) th{background:#f7f8fa}
 .hi .hi-table td,.hi .hi-table th{padding-left:10px}
 .hi .hi-table:has(td:nth-child(2):hover) tr:not(.grp) :is(td,th):nth-child(2),
 .hi .hi-table:has(td:nth-child(3):hover) tr:not(.grp) :is(td,th):nth-child(3),
@@ -459,3 +458,20 @@ h3{margin:0}
 .ai .v-load i{display:block;height:8px;border-radius:4px;background:#cfd5df}
 .ai .v-load .on i{background:var(--blue)}
 .hi .hi-table tr.key td,.hi .hi-table tr.key th{padding-left:10px}
+
+/* 요금표 묶음 제목: 본문 행 제목과 같은 글꼴, 자간, 왼쪽 여백. 묶음 위 간격 32px, 아래 8px로 통일 */
+.hi .hi-table tr.grp th{font-size:16px;font-weight:700;letter-spacing:0;color:var(--ink);padding:32px 10px 8px;border-bottom:1px solid #c9d0db;background:none}
+.hi .hi-table tbody tr.grp:first-child th{padding-top:20px}
+.hi .hi-table tbody th{font-size:16px;letter-spacing:0}
+.hi .hi-table tr.key td{font-size:18px;font-weight:700;letter-spacing:-.2px;padding:14px 16px 4px 10px;border-bottom:0}
+.hi .hi-table tr.key th{padding:16px 10px 4px;border-bottom:0}
+.hi .hi-table tr.desc td{padding:0 16px 14px 10px}
+
+.hi .hi-table{table-layout:fixed}
+.hi .hi-table thead th:first-child,.hi .hi-table tbody th{width:150px}
+.hi .hi-table tbody tr:nth-child(n) td,.hi .hi-table tbody tr:nth-child(n) th{background:none}
+.hi .hi-table:has(td:nth-child(2):hover) tr:not(.grp) :is(td,th):nth-child(2),
+.hi .hi-table:has(td:nth-child(3):hover) tr:not(.grp) :is(td,th):nth-child(3),
+.hi .hi-table:has(td:nth-child(4):hover) tr:not(.grp) :is(td,th):nth-child(4){background:var(--tint)}
+.hi .hi-table tr.key th{font-weight:700;color:var(--ink)}
+.hi .hi-table tr.desc td,.hi .hi-table tr.desc th{border-bottom:1px solid #c9d0db}
