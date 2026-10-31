@@ -376,3 +376,7 @@ h3{margin:0}
 .hi .hi-lead-feats{margin-bottom:36px}
 .hi .hi-lead-feats+.hi-sub{margin-top:0}
 .hi .hi-table tbody tr.grp:first-child th{padding-top:0}
+
+/* 질문형 제목: 질문(30px 제목) > 답 요약(19px 진한 글씨) > 설명(16px 회색) */
+.hi .hi-label h2{margin-bottom:10px}
+.hi .hi-answer{font-size:19px!important;font-weight:600;color:var(--ink)!important;line-height:1.5!important;letter-spacing:-.3px;margin:0 0 10px}

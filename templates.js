@@ -116,9 +116,11 @@
   //  E4 -> 내용에 맞는 형식(요금은 항목별 비교표, 절차는 번호 목록), 왼쪽 정렬로 읽기 시작점 고정
   function renderH(svc, c) {
     let secNo = 0;
+    // "질문? 답" 형태의 제목은 질문(제목)과 답(요약)으로 나눠 위계를 준다. 질문형이 아닌 제목은 그대로
+    const qa = (h) => { const i = h.indexOf("? "); return i < 0 ? `<h2>${esc(h)}</h2>` : `<h2>${esc(h.slice(0, i + 1))}</h2><p class="hi-answer">${esc(h.slice(i + 2))}</p>`; };
     const row = (id, k, h, p, body, cls = "") => `
         <section class="hi-row ${cls}" id="${id}">
-          <div class="hi-label"><span class="hi-secno">0${++secNo}</span>${kicker(k)}<h2>${esc(h)}</h2><p>${esc(p)}</p></div>
+          <div class="hi-label"><span class="hi-secno">0${++secNo}</span>${kicker(k)}${qa(h)}<p>${esc(p)}</p></div>
           <div class="hi-body">${body}</div>
         </section>`;
     const f = c.features.items, P = c.pricing, Q = c.faq;
