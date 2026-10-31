@@ -421,3 +421,41 @@ h3{margin:0}
 .hi .hi-steps .hi-ico{width:22px;height:22px}
 .hi .hi-group{display:flex;align-items:center;gap:10px}
 .hi .hi-group .hi-ico{width:22px;height:22px}
+
+/* 위계 설계형 요금표: 고르는 순서(한도 → 기능 → 요금)대로 묶고 번호를 붙임, 줄무늬와 열 강조로 시선 추적 */
+.hi .hi-stepno{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--ink);color:#fff;font-size:12px;font-weight:700;margin-right:8px;vertical-align:1px}
+.hi .hi-table tr.grp th{color:var(--ink);font-size:15px}
+.hi .hi-table tbody tr:not(.grp):not(.act):not(.desc):not(.key):nth-child(even) td,.hi .hi-table tbody tr:not(.grp):not(.act):not(.desc):not(.key):nth-child(even) th{background:#f7f8fa}
+.hi .hi-table td,.hi .hi-table th{padding-left:10px}
+.hi .hi-table:has(td:nth-child(2):hover) tr:not(.grp) :is(td,th):nth-child(2),
+.hi .hi-table:has(td:nth-child(3):hover) tr:not(.grp) :is(td,th):nth-child(3),
+.hi .hi-table:has(td:nth-child(4):hover) tr:not(.grp) :is(td,th):nth-child(4){background:var(--tint)}
+.hi .hi-table tr.key td{padding-top:14px}
+/* AI 전형형 제품 그림: 같은 크기 카드 2개를 가운데 정렬(전형 배치) */
+.ai .ai-vis{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:0 0 18px}
+.ai .ai-vis-card{border:1px solid var(--line);border-radius:17px;background:var(--tint);height:170px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px}
+.ai .v-cap{font-size:12px;color:var(--muted);margin:0}
+.ai .v-week{display:flex;gap:6px}.ai .v-week>div{display:flex;flex-direction:column;gap:4px;align-items:center}
+.ai .v-week b{font-size:11px;color:var(--muted);font-weight:600}
+.ai .v-week i{display:block;width:30px;height:14px;border-radius:3px;background:#fff}
+.ai .v-week i.busy{background:#dfe3ea}.ai .v-week i.on{background:var(--blue)}
+.ai .v-sync{display:flex;align-items:center;gap:12px}
+.ai .hi-ico{width:28px;height:28px;color:var(--blue)}
+.ai .v-pill{background:#fff;border-radius:8px;padding:8px 12px;font-size:13px;font-weight:600}
+.ai .v-phone{position:relative;width:64px;height:92px;border-radius:12px;background:#fff;border:2px solid var(--ink);display:grid;place-items:center}
+.ai .v-phone .hi-ico{width:34px;height:34px;color:var(--ink)}
+.ai .v-badge{position:absolute;right:-56px;top:12px;background:#fff;border-radius:8px;padding:4px 8px;font-size:12px;font-weight:700;color:var(--blue)}
+.ai .v-toast{display:flex;gap:10px;align-items:center;background:#fff;border-radius:10px;padding:12px 16px}
+.ai .v-toast .hi-ico{width:22px;height:22px}
+.ai .v-toast b{display:block;font-size:13px}.ai .v-toast span{font-size:12px;color:#c0392b;font-weight:600}
+.ai .v-rows{display:flex;flex-direction:column;gap:5px;width:230px}
+.ai .v-rows>div{display:flex;justify-content:space-between;gap:8px;background:#fff;border-radius:7px;padding:6px 10px;font-size:12px}
+.ai .v-rows em{font-style:normal;font-size:11px;font-weight:600;color:var(--blue)}
+.ai .v-rows.one{width:150px}
+.ai .v-receipt{display:flex;align-items:center;gap:10px}
+.ai .v-receipt>.hi-ico{width:34px;height:34px}
+.ai .v-load{display:flex;flex-direction:column;gap:6px;width:200px}
+.ai .v-load>div{display:grid;grid-template-columns:36px 1fr;align-items:center;gap:8px;font-size:12px}
+.ai .v-load i{display:block;height:8px;border-radius:4px;background:#cfd5df}
+.ai .v-load .on i{background:var(--blue)}
+.hi .hi-table tr.key td,.hi .hi-table tr.key th{padding-left:10px}
