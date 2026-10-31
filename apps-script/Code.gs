@@ -20,7 +20,7 @@ const HEAD = {
     "quiz_total", "sus_items", "sus_score", "ai_rating", "open1", "open2", "explore_scroll_pct", "saved_at"]
 };
 
-function doGet() { return out({ ok: true, msg: "실험 서버가 동작 중입니다.", version: 4, key_set: String(ADMIN_KEY) !== "여기에_관리자_비밀번호" }); }
+function doGet() { return out({ ok: true, msg: "실험 서버가 동작 중입니다.", version: 5, key_set: String(ADMIN_KEY) !== "여기에_관리자_비밀번호" }); }
 
 function doPost(e) {
   let req;
@@ -69,9 +69,14 @@ function start(req) {
   if (same) return { pid: same.pid, cell: Number(same.cell) };
   const pilot = req.pilot ? 1 : 0;
   const group = parts.filter(function (p) { return truthy(p.pilot) === !!pilot; });
-  const pid = (pilot ? "X" : "P") + ("0" + (group.length + 1)).slice(-2);
+  // 비어 있는 가장 작은 번호를 쓴다(앞 번호 행을 지우면 그 번호를 다음 사람이 받음)
+  const prefix = pilot ? "X" : "P";
+  const used = {};
+  group.forEach(function (p) { const m = /^[PX](\d+)$/.exec(String(p.pid)); if (m) used[Number(m[1])] = true; });
+  let n = 1; while (used[n]) n++;
+  const pid = prefix + ("0" + n).slice(-2);
   let cell;
-  if (pilot) cell = (req.cell >= 1 && req.cell <= N_CELLS) ? Number(req.cell) : (group.length % N_CELLS) + 1;
+  if (pilot) cell = (req.cell >= 1 && req.cell <= N_CELLS) ? Number(req.cell) : ((n - 1) % N_CELLS) + 1;
   else cell = assignCell(parts);
   const row = { pid: pid, token: req.token, pilot: pilot, cell: cell, status: "진행 중", started_at: new Date().toISOString(),
     browser: req.browser || "", window_w: req.window_w || "", window_h: req.window_h || "", excluded: 0 };
