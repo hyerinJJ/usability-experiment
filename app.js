@@ -279,7 +279,7 @@
     screen(`<h1>참여해 주셔서 감사합니다</h1>
       <p>이 실험은 AI가 생성한 서비스 소개 웹페이지의 전형적인 시각 구조와 문구가 정보를 찾는 데 어떤 영향을 미치는지 알아보기 위한 것입니다. 네 페이지는 같은 정보를 담고 있지만 배치 방식과 제목 문구가 서로 달랐습니다. 처음에 목적을 자세히 알려 드리지 않은 것은 응답이 목적에 영향을 받지 않도록 하기 위해서였습니다.</p>
       <p>궁금한 점은 ${esc(C.CONTACT)}에게 문의해 주세요.</p>
-      <p id="sync" class="progress"></p>
+      <p id="sync" class="sync-msg"></p>
       <div id="dlwrap"></div>`);
     watchSync(s);
   }
@@ -298,8 +298,8 @@
     const t0 = Date.now();
     const upd = () => {
       const n = window.API.pending();
-      if (n === 0) { el.textContent = "기록이 모두 저장되었습니다. 이제 창을 닫으셔도 됩니다."; wrap.innerHTML = ""; return; }
-      el.textContent = `기록을 저장하는 중입니다(${n}건 남음). 창을 닫지 말아 주세요.`;
+      if (n === 0) { el.className = "sync-msg ok"; el.textContent = "기록이 모두 저장되었습니다. 이제 창을 닫으셔도 됩니다."; wrap.innerHTML = ""; return; }
+      el.className = "sync-msg wait"; el.textContent = `⚠ 아직 창을 닫지 마세요! 기록을 저장하는 중입니다 (${n}건 남음)`;
       if (Date.now() - t0 > 30000) showDl();
       setTimeout(upd, 1000);
     };

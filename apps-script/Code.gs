@@ -20,7 +20,7 @@ const HEAD = {
     "quiz_total", "sus_items", "sus_score", "ai_rating", "open1", "open2", "explore_scroll_pct", "saved_at"]
 };
 
-function doGet() { return out({ ok: true, msg: "실험 서버가 동작 중입니다.", version: 5, key_set: String(ADMIN_KEY) !== "여기에_관리자_비밀번호" }); }
+function doGet() { return out({ ok: true, msg: "실험 서버가 동작 중입니다.", version: 6, key_set: String(ADMIN_KEY) !== "여기에_관리자_비밀번호" }); }
 
 function doPost(e) {
   let req;
@@ -43,6 +43,7 @@ function handle(req) {
     if (a === "admin_data") return { participants: clean(readAll("participants")), tasks: clean(readAll("tasks")), surveys: clean(readAll("surveys")), target: TARGET_PER_CELL, cells: N_CELLS };
     if (a === "admin_update") return adminUpdate(req);
     if (a === "admin_delete_pilot") return deletePilot();
+    if (a === "admin_delete") return deleteParticipant(req.pid);
     throw new Error("알 수 없는 관리자 요청");
   }
   // 이하 참가자 요청: pid와 token이 맞아야 기록한다
@@ -115,6 +116,17 @@ function deletePilot() {
   ["tasks", "surveys", "participants"].forEach(function (name) {
     const s = sh(name); const rows = readAll(name);
     for (let i = rows.length - 1; i >= 0; i--) if (truthy(rows[i].pilot)) { s.deleteRow(rows[i]._row); n++; }
+  });
+  return { deleted: n };
+}
+
+// 참가자 한 명의 모든 기록(참가자 정보, 과업, 설문)을 지운다. 지운 번호는 다음 참가자가 받는다
+function deleteParticipant(pid) {
+  if (!pid) throw new Error("지울 참가자 코드가 없습니다.");
+  let n = 0;
+  ["tasks", "surveys", "participants"].forEach(function (name) {
+    const s = sh(name); const rows = readAll(name);
+    for (let i = rows.length - 1; i >= 0; i--) if (String(rows[i].pid) === String(pid)) { s.deleteRow(rows[i]._row); n++; }
   });
   return { deleted: n };
 }

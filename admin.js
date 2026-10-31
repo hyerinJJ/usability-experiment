@@ -113,7 +113,7 @@
       <h2>참가자</h2>
       <p class="note">제외할 참가자는 체크하고 사유를 적은 뒤 저장하세요. 제외하면 결과 요약과 분석용 파일에서 빠지고, 그 칸에 한 명이 다시 배정됩니다. 탭 이탈 ${C.TAB_EXCLUDE_SEC}초 이상인 과업은 자동으로 분석에서 빠집니다.</p>
       <div class="scroll"><table>
-        <tr><th>코드</th><th>구분</th><th>칸</th><th>상태</th><th>시작</th><th>소요(분)</th><th>과업 기록</th><th>탭 이탈 제외 과업</th><th>브라우저</th><th>창 크기</th><th>제외</th><th class="l">제외 사유(자동 기록)</th><th></th><th></th></tr>
+        <tr><th>코드</th><th>구분</th><th>칸</th><th>상태</th><th>시작</th><th>소요(분)</th><th>과업 기록</th><th>탭 이탈 제외 과업</th><th>브라우저</th><th>창 크기</th><th>제외</th><th class="l">제외 사유(자동 기록)</th><th></th><th></th><th></th></tr>
         ${rows.map((p) => `<tr class="${p.excluded ? "ex" : ""}" data-pid="${esc(p.pid)}">
           <td><b>${esc(p.pid)}</b></td><td>${p.pilot ? "파일럿" : "본 실험"}</td><td>${p.cell}</td><td>${tagOf(p)}</td>
           <td>${fmtTime(p.started_at)}</td><td>${p.total_sec ? (p.total_sec / 60).toFixed(1) : ""}</td>
@@ -122,11 +122,27 @@
           <td class="act"><input type="checkbox" class="exc" ${p.excluded ? "checked" : ""}></td>
           <td class="act l"><input type="text" class="rsn" value="${esc(p.exclude_reason || "")}" placeholder="제외 사유" style="width:200px">${p.note ? `<div class="note">${esc(p.note)}</div>` : ""}</td>
           <td class="act"><button class="b sv">저장</button></td>
-          <td class="act"><button class="b p dt">기록 보기</button></td></tr>`).join("")}
+          <td class="act"><button class="b p dt">기록 보기</button></td>
+          <td class="act"><button class="b danger del">삭제</button></td></tr>`).join("")}
       </table></div>
       <div id="detail"></div>`;
     document.querySelectorAll("#s-people .dt").forEach((b) => b.addEventListener("click", () => showDetail(b.closest("tr").dataset.pid)));
     if (openPid) showDetail(openPid, true);
+    document.querySelectorAll("#s-people .del").forEach((b) => b.addEventListener("click", async () => {
+      const tr = b.closest("tr"); const pid = tr.dataset.pid;
+      const p = D.participants.find((x) => String(x.pid) === pid);
+      const warn = p && p.status === "진행 중" ? "\n\n주의: 이 참가자는 지금 진행 중입니다. 지우면 남은 기록이 저장되지 않습니다." : "";
+      const typed = prompt(`${pid}의 참가자 정보, 과업, 설문 기록을 시트에서 모두 지웁니다. 되돌릴 수 없습니다.${warn}\n\n계속하려면 ${pid}를 입력하세요.`);
+      if (typed === null) return;
+      if (typed.trim().toUpperCase() !== pid.toUpperCase()) { alertMsg("코드가 맞지 않아 지우지 않았습니다."); return; }
+      b.textContent = "삭제 중";
+      try {
+        const r = await api({ action: "admin_delete", pid });
+        if (openPid === pid) openPid = null;
+        await load();
+        alertMsg(`${pid} 기록 ${r.deleted}행을 지웠습니다. 다음 참가자가 이 번호를 받습니다.`);
+      } catch (e) { b.textContent = "실패"; alertMsg(e.message); }
+    }));
     document.querySelectorAll("#s-people .sv").forEach((b) => b.addEventListener("click", async () => {
       const tr = b.closest("tr"); b.textContent = "저장 중";
       try {
