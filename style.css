@@ -475,3 +475,6 @@ h3{margin:0}
 .hi .hi-table:has(td:nth-child(4):hover) tr:not(.grp) :is(td,th):nth-child(4){background:var(--tint)}
 .hi .hi-table tr.key th{font-weight:700;color:var(--ink)}
 .hi .hi-table tr.desc td,.hi .hi-table tr.desc th{border-bottom:1px solid #c9d0db}
+/* E3 회피: 섹션 아래 여백을 내용 양에 맞춰 다르게(짧은 목록 88px, 기본 112px, 요금표 136px) */
+.hi .hi-row.tight,.hi #how{padding-bottom:88px}
+.hi #pricing{padding-bottom:136px}
