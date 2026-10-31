@@ -225,7 +225,10 @@
       await waitClick("#go");
       const ex = await explore(step);
       backup.surveys.push(ex); send("survey", s, ex);
-      for (const task of svc.tasks) {
+      // 과업 순서는 페이지마다 무작위(순서와 학습 효과 상쇄). 실제 순서는 tasks 시트의 saved_at으로 확인
+      const order = svc.tasks.slice();
+      for (let i = order.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [order[i], order[j]] = [order[j], order[i]]; }
+      for (const task of order) {
         k++;
         screen(`<p class="progress">${step.position}번째 페이지 (총 4개) &nbsp; 과업 ${k}/${plan.length * svc.tasks.length}</p><h1>${esc(task.id)}</h1><p>${esc(task.prompt)}</p><button class="primary" id="go">과업 시작</button>`);
         await waitClick("#go");
