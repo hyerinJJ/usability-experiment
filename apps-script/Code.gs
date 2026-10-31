@@ -9,7 +9,7 @@ const N_CELLS = 8;            // 배정 칸 수 (부록 표 3)
 const TARGET_PER_CELL = 3;    // 칸별 목표 인원
 const STALE_MIN = 60;
 // 본 실험 참가자가 시작, 완료, 중단할 때 메일 알림을 보낼지(받는 사람: 스크립트 소유자). 끄려면 false
-const NOTIFY = true;         // 시작 후 이 시간(분)이 지나도 끝나지 않으면 배정 인원에서 뺀다
+const NOTIFY = false;         // 시작 후 이 시간(분)이 지나도 끝나지 않으면 배정 인원에서 뺀다
 
 const HEAD = {
   participants: ["pid", "token", "pilot", "cell", "status", "started_at", "finished_at", "total_sec",
