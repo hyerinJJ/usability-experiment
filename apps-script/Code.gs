@@ -7,7 +7,9 @@ const ADMIN_KEY = "여기에_관리자_비밀번호";
 
 const N_CELLS = 8;            // 배정 칸 수 (부록 표 3)
 const TARGET_PER_CELL = 3;    // 칸별 목표 인원
-const STALE_MIN = 60;         // 시작 후 이 시간(분)이 지나도 끝나지 않으면 배정 인원에서 뺀다
+const STALE_MIN = 60;
+// 본 실험 참가자가 시작, 완료, 중단할 때 메일 알림을 보낼지(받는 사람: 스크립트 소유자). 끄려면 false
+const NOTIFY = true;         // 시작 후 이 시간(분)이 지나도 끝나지 않으면 배정 인원에서 뺀다
 
 const HEAD = {
   participants: ["pid", "token", "pilot", "cell", "status", "started_at", "finished_at", "total_sec",
@@ -20,7 +22,7 @@ const HEAD = {
     "quiz_total", "sus_items", "sus_score", "ai_rating", "open1", "open2", "explore_scroll_pct", "saved_at"]
 };
 
-function doGet() { return out({ ok: true, msg: "실험 서버가 동작 중입니다.", version: 6, key_set: String(ADMIN_KEY) !== "여기에_관리자_비밀번호" }); }
+function doGet() { return out({ ok: true, msg: "실험 서버가 동작 중입니다.", version: 7, key_set: String(ADMIN_KEY) !== "여기에_관리자_비밀번호" }); }
 
 function doPost(e) {
   let req;
@@ -55,10 +57,11 @@ function handle(req) {
   if (a === "survey") { const r = req.data; r.key = [p.pid, r.kind, r.position || 0].join("|"); r.pid = p.pid; r.pilot = p.pilot; r.saved_at = now; upsert("surveys", r); return {}; }
   if (a === "finish") {
     updateRow("participants", p._row, { status: "완료", finished_at: now, total_sec: req.data.total_sec, pilot_feedback: req.data.pilot_feedback || "" });
+    notify(p, "완료", "소요 " + (Number(req.data.total_sec) / 60).toFixed(1) + "분");
     return {};
   }
   if (a === "abort") {
-    if (p.status !== "완료") updateRow("participants", p._row, { status: "중단", note: appendNote(p.note, req.data && req.data.reason) });
+    if (p.status !== "완료") { updateRow("participants", p._row, { status: "중단", note: appendNote(p.note, req.data && req.data.reason) }); notify(p, "중단", (req.data && req.data.reason) || ""); }
     return {};
   }
   throw new Error("알 수 없는 요청");
@@ -82,6 +85,7 @@ function start(req) {
   const row = { pid: pid, token: req.token, pilot: pilot, cell: cell, status: "진행 중", started_at: new Date().toISOString(),
     browser: req.browser || "", window_w: req.window_w || "", window_h: req.window_h || "", excluded: 0 };
   sh("participants").appendRow(HEAD.participants.map(function (k) { return row[k] === undefined ? "" : row[k]; }));
+  notify(row, "시작", "");
   return { pid: pid, cell: cell };
 }
 
@@ -129,6 +133,20 @@ function deleteParticipant(pid) {
     for (let i = rows.length - 1; i >= 0; i--) if (String(rows[i].pid) === String(pid)) { s.deleteRow(rows[i]._row); n++; }
   });
   return { deleted: n };
+}
+
+// 본 실험 참가자 알림 메일(파일럿은 보내지 않음). 메일이 실패해도 실험 기록에는 영향 없음
+function notify(p, what, extra) {
+  if (!NOTIFY || truthy(p.pilot)) return;
+  try {
+    const all = readAll("participants").filter(function (x) { return !truthy(x.pilot) && !truthy(x.excluded); });
+    const done = all.filter(function (x) { return x.status === "완료"; }).length;
+    const to = Session.getEffectiveUser().getEmail();
+    const subject = "[실험] " + p.pid + " " + what + " (완료 " + done + "/" + (N_CELLS * TARGET_PER_CELL) + "명)";
+    const body = p.pid + " 참가자가 실험을 " + what + "했습니다.\n칸: " + p.cell + (extra ? "\n" + extra : "") +
+      "\n\n본 실험 완료 " + done + "명 / 목표 " + (N_CELLS * TARGET_PER_CELL) + "명\n관리자 페이지: https://hyerinjj.github.io/usability-experiment/admin.html";
+    if (to) MailApp.sendEmail(to, subject, body);
+  } catch (e) {}
 }
 
 // ---------- 시트 도우미
