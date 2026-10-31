@@ -112,6 +112,14 @@
     user: '<circle cx="10" cy="8" r="3.5"/><path d="M3.5 20c.6-3.6 3.2-5.5 6.5-5.5"/><path d="M15 17h6M18.5 14.5L21 17l-2.5 2.5"/>',
     chat: '<path d="M4 5h16v11H9l-5 4z"/><path d="M8 9.5h8M8 12.5h5"/>',
     list: '<path d="M9 6.5h11M9 12h11M9 17.5h11"/><circle cx="5" cy="6.5" r="1"/><circle cx="5" cy="12" r="1"/><circle cx="5" cy="17.5" r="1"/>',
+    login: '<path d="M14 4h5v16h-5"/><path d="M4 12h10M10.5 8.5L14 12l-3.5 3.5"/>',
+    mail: '<rect x="3.5" y="5.5" width="17" height="13" rx="1.5"/><path d="M4 7l8 6 8-6"/>',
+    upload: '<path d="M12 15V4"/><path d="M7.5 8.5L12 4l4.5 4.5"/><path d="M4.5 19.5h15"/>',
+    store: '<path d="M4 9.5l1.5-5h13l1.5 5"/><path d="M4 9.5h16v1a2.7 2.7 0 0 1-5.3 0 2.7 2.7 0 0 1-5.4 0A2.7 2.7 0 0 1 4 10.5z"/><path d="M5.5 13v7h13v-7"/>',
+    phone: '<rect x="7" y="3" width="10" height="18" rx="2"/><path d="M11 18h2"/>',
+    card: '<rect x="3.5" y="6" width="17" height="12" rx="1.5"/><path d="M3.5 10h17M7 14.5h4"/>',
+    calendar: '<rect x="4" y="5.5" width="16" height="14.5" rx="1.5"/><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4"/>',
+    call: '<path d="M6 4h3l1.5 4-2 1.3a10 10 0 0 0 6.2 6.2l1.3-2 4 1.5v3a2 2 0 0 1-2 2A16 16 0 0 1 4 6a2 2 0 0 1 2-2z"/>',
     alert: '<path d="M12 4l9 16H3z"/><path d="M12 10v4.5"/><circle cx="12" cy="17.2" r=".9" fill="currentColor"/>'
   };
   const FICON = {
@@ -119,6 +127,31 @@
     inventory: ["barcode", "bell", "table", "minus", "clock", "download"],
     accounting: ["tag", "receipt", "file", "chart", "check", "share"],
     support: ["inbox", "user", "chat", "list", "alert", "chart"]
+  };
+  const SICON = {
+    schedule: ["login", "mail", "clock", "check"],
+    inventory: ["upload", "store", "phone", "barcode"],
+    accounting: ["card", "file", "mail", "check"],
+    support: ["chat", "call", "mail", "check"]
+  };
+  // 주요 기능 2개에 붙는 작은 제품 화면 그림(과업 정답과 관계없는 장식용 내용)
+  const VIS = {
+    schedule: [
+      () => `<div class="v-week">${["월", "화", "수", "목", "금"].map((d, i) => `<div><b>${d}</b>${[0, 1, 2, 3].map((r) => `<i class="${(i === 1 && r === 0) || (i === 2 && r === 2) || (i === 4 && r === 1) ? "on" : r % 2 === i % 2 ? "busy" : ""}"></i>`).join("")}</div>`).join("")}</div><p class="v-cap">후보 시간 3개</p>`,
+      () => `<div class="v-sync"><span class="v-pill">타임핏</span>${ico("sync")}<span class="v-pill">구글 캘린더</span></div><p class="v-cap">일정 변경이 양쪽에 반영</p>`
+    ],
+    inventory: [
+      () => `<div class="v-phone">${ico("barcode")}<span class="v-badge">+12 입고</span></div><p class="v-cap">무선 이어폰 입고 기록</p>`,
+      () => `<div class="v-toast">${ico("bell")}<div><b>충전 케이블</b><span>9개 남음</span></div></div><p class="v-cap">담당자에게 보낸 알림</p>`
+    ],
+    accounting: [
+      () => `<div class="v-rows">${[["카페 모모", "식비"], ["택시", "교통비"], ["사무용품몰", "비품"]].map((r) => `<div><span>${r[0]}</span><em>${r[1]}</em></div>`).join("")}</div><p class="v-cap">항목이 붙은 카드 내역</p>`,
+      () => `<div class="v-receipt">${ico("receipt")}<span class="v-arrow">→</span><div class="v-rows one"><div><span>사무용품몰</span><em>영수증 있음</em></div></div></div><p class="v-cap">거래에 연결된 영수증</p>`
+    ],
+    support: [
+      () => `<div class="v-rows">${[["채팅", "배송이 아직 안 왔어요"], ["메일", "교환 절차가 궁금합니다"], ["전화", "주문 내역 확인"]].map((r) => `<div><em>${r[0]}</em><span>${r[1]}</span></div>`).join("")}</div><p class="v-cap">한 목록에 모인 문의</p>`,
+      () => `<div class="v-load">${[["민지", 6], ["서준", 2], ["하은", 4]].map((r, i) => `<div class="${i === 1 ? "on" : ""}"><span>${r[0]}</span><i style="width:${r[1] * 14}%"></i></div>`).join("")}</div><p class="v-cap">업무가 적은 상담원에게 배정</p>`
+    ]
   };
   const ico = (name) => `<svg class="hi-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IP[name]}</svg>`;
 
@@ -166,11 +199,11 @@
         <nav class="hi-toc" aria-label="이 페이지의 구성"><span class="hi-toc-h">이 페이지의 구성</span><ol>${["핵심 기능", "작동 방식", "요금제", "FAQ", "시작하기"].map((x, i) => `<li><span>0${i + 1}</span>${x}</li>`).join("")}</ol></nav>
         ${row("features", "핵심 기능", c.features.heading, c.features.lead, `
           <p class="hi-sub">주요 기능</p>
-          <div class="hi-lead-feats">${f.slice(0, 2).map((x, i) => `<div>${ico(FICON[svc.key][i])}<h3>${esc(x.title)}</h3><p>${esc(x.body)}</p></div>`).join("")}</div>
+          <div class="hi-lead-feats">${f.slice(0, 2).map((x, i) => `<div><div class="hi-vis" aria-hidden="true">${VIS[svc.key][i]()}</div>${ico(FICON[svc.key][i])}<h3>${esc(x.title)}</h3><p>${esc(x.body)}</p></div>`).join("")}</div>
           <p class="hi-sub">그 밖의 기능</p>
           <div class="hi-sub-feats">${f.slice(2).map((x, i) => `<div>${ico(FICON[svc.key][i + 2])}<h3>${esc(x.title)}</h3><p>${esc(x.body)}</p></div>`).join("")}</div>`)}
         ${row("how", "작동 방식", c.steps.heading, c.steps.lead, `
-          <ol class="hi-steps">${c.steps.items.map((s, i) => `<li><span class="hi-n">${i + 1}</span><b>${esc(s.title)}</b><span>${esc(s.body)}</span></li>`).join("")}</ol>`, "tight")}
+          <ol class="hi-steps">${c.steps.items.map((s, i) => `<li><span class="hi-n">${i + 1}</span>${ico(SICON[svc.key][i])}<b>${esc(s.title)}</b><span>${esc(s.body)}</span></li>`).join("")}</ol>`, "tight")}
         ${row("pricing", "요금제", P.heading, P.lead, `
           <table class="hi-table">
             <thead><tr><th></th>${P.plans.map((p) => `<th>${esc(p.name)}</th>`).join("")}</tr></thead>
@@ -185,7 +218,7 @@
             </tbody>
           </table>`)}
         ${row("faq", "FAQ", Q.heading, Q.lead, Q.groups.map((g, gi) => `
-          <div class="hi-faq-group"><p class="hi-group">${esc(Q.groupNames[gi])}</p>
+          <div class="hi-faq-group"><p class="hi-group">${ico(gi === 0 ? "calendar" : "card")}${esc(Q.groupNames[gi])}</p>
           <dl class="hi-faq">${g.map((i) => `<div><dt>${esc(Q.items[i].q)}</dt><dd>${esc(Q.items[i].a)}</dd></div>`).join("")}</dl></div>`).join(""))}
         ${row("start", "시작하기", c.cta.heading, c.cta.body, `
           <div class="cta-actions">
