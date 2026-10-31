@@ -224,7 +224,7 @@
         ${row("start", "시작하기", c.cta.heading, c.cta.body, `
           <div class="cta-actions">
             <div class="cta-primary"><b>${c.cta.actions[0].name}</b><p>${c.cta.actions[0].desc}</p><button class="btn cta-main" data-go="trial">${c.cta.actions[0].name} →</button></div>
-            <div class="cta-secondary">${c.cta.actions.slice(1).map((a) => `<button class="choice-btn" data-go="${a.go}"><b>${a.name}</b><span>${a.desc}</span></button>`).join("")}</div>
+            <div class="cta-secondary">${c.cta.actions.slice(1).map((a) => `<div class="cta-sub"><b>${a.name}</b><p>${a.desc}</p><button class="btn-sub" data-go="${a.go}">${a.name} →</button></div>`).join("")}</div>
           </div>`)}
         ${footer(svc.brand)}
       </div>`;
