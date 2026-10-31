@@ -88,6 +88,40 @@
     </div></section>`;
   const footer = (brand) => `<footer class="footer"><span class="brand"><span class="brand-mark">↗</span>${esc(brand)}</span><span>© 2026 ${esc(brand)}. 가상의 서비스입니다.</span></footer>`;
 
+
+  // 위계 설계형 기능 아이콘: 기능 내용을 나타내는 선 아이콘(같은 크기, 한 가지 색). AI 전형형의 장식용 아이콘 타일과 달리 제목 앞에서 기능 종류를 먼저 알려 준다
+  const IP = {
+    search: '<circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/>',
+    sync: '<path d="M4 12a8 8 0 0 1 13.7-5.6L20 8.5"/><path d="M20 3.5v5h-5"/><path d="M20 12a8 8 0 0 1-13.7 5.6L4 15.5"/><path d="M4 20.5v-5h5"/>',
+    bell: '<path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/>',
+    door: '<path d="M6 21V4h12v17"/><path d="M3.5 21h17"/><circle cx="14.5" cy="12.5" r=".9" fill="currentColor"/>',
+    globe: '<circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17"/><path d="M12 3.5c2.6 2.4 2.6 14.6 0 17M12 3.5c-2.6 2.4-2.6 14.6 0 17"/>',
+    shield: '<path d="M12 3.5l7 3v5c0 4.5-3 7.8-7 9-4-1.2-7-4.5-7-9v-5z"/><path d="M9 12l2 2 4-4"/>',
+    barcode: '<path d="M4 6v12M7 6v12M10.5 6v12M13 6v12M16.5 6v12M20 6v12"/>',
+    table: '<rect x="3.5" y="5" width="17" height="14" rx="1.5"/><path d="M3.5 10h17M10 10v9M15 10v9"/>',
+    minus: '<circle cx="12" cy="12" r="8.5"/><path d="M8 12h8"/>',
+    clock: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',
+    download: '<path d="M12 4v11"/><path d="M7.5 10.5L12 15l4.5-4.5"/><path d="M4.5 19.5h15"/>',
+    tag: '<path d="M3.5 12.5V4h8.5l8.5 8.5-8 8z"/><circle cx="8" cy="8.5" r="1.2"/>',
+    receipt: '<path d="M6 3.5h12v17l-2-1.3-2 1.3-2-1.3-2 1.3-2-1.3-2 1.3z"/><path d="M9 8.5h6M9 12h6"/>',
+    file: '<path d="M6 3.5h8l4 4v13H6z"/><path d="M14 3.5v4h4M9 12.5h6M9 16h6"/>',
+    chart: '<path d="M4 20.5h16"/><path d="M7 17v-5M12 17V7M17 17v-8"/>',
+    check: '<circle cx="12" cy="12" r="8.5"/><path d="M8 12.5l2.7 2.7L16 10"/>',
+    share: '<circle cx="6.5" cy="12" r="2.3"/><circle cx="17.5" cy="6" r="2.3"/><circle cx="17.5" cy="18" r="2.3"/><path d="M8.6 11l6.8-3.8M8.6 13l6.8 3.8"/>',
+    inbox: '<path d="M3.5 13.5l2.5-8h12l2.5 8v6h-17z"/><path d="M3.5 13.5h5l1.5 2h4l1.5-2h5"/>',
+    user: '<circle cx="10" cy="8" r="3.5"/><path d="M3.5 20c.6-3.6 3.2-5.5 6.5-5.5"/><path d="M15 17h6M18.5 14.5L21 17l-2.5 2.5"/>',
+    chat: '<path d="M4 5h16v11H9l-5 4z"/><path d="M8 9.5h8M8 12.5h5"/>',
+    list: '<path d="M9 6.5h11M9 12h11M9 17.5h11"/><circle cx="5" cy="6.5" r="1"/><circle cx="5" cy="12" r="1"/><circle cx="5" cy="17.5" r="1"/>',
+    alert: '<path d="M12 4l9 16H3z"/><path d="M12 10v4.5"/><circle cx="12" cy="17.2" r=".9" fill="currentColor"/>'
+  };
+  const FICON = {
+    schedule: ["search", "sync", "bell", "door", "globe", "shield"],
+    inventory: ["barcode", "bell", "table", "minus", "clock", "download"],
+    accounting: ["tag", "receipt", "file", "chart", "check", "share"],
+    support: ["inbox", "user", "chat", "list", "alert", "chart"]
+  };
+  const ico = (name) => `<svg class="hi-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IP[name]}</svg>`;
+
   // ---------- AI 전형형: 원본 구조(E2 균일한 카드 그리드, E3 섹션 간 동일 여백, E4 가운데 제목 + 같은 카드 그리드를 모든 섹션에 반복)
   function renderAI(svc, c) {
     const head = (k, h, p) => `<div class="section-head">${kicker(k)}<h2>${esc(h)}</h2><p>${esc(p)}</p></div>`;
@@ -132,9 +166,9 @@
         <nav class="hi-toc" aria-label="이 페이지의 구성"><span class="hi-toc-h">이 페이지의 구성</span><ol>${["핵심 기능", "작동 방식", "요금제", "FAQ", "시작하기"].map((x, i) => `<li><span>0${i + 1}</span>${x}</li>`).join("")}</ol></nav>
         ${row("features", "핵심 기능", c.features.heading, c.features.lead, `
           <p class="hi-sub">주요 기능</p>
-          <div class="hi-lead-feats">${f.slice(0, 2).map((x, i) => `<div><h3>${esc(x.title)}</h3><p>${esc(x.body)}</p></div>`).join("")}</div>
+          <div class="hi-lead-feats">${f.slice(0, 2).map((x, i) => `<div>${ico(FICON[svc.key][i])}<h3>${esc(x.title)}</h3><p>${esc(x.body)}</p></div>`).join("")}</div>
           <p class="hi-sub">그 밖의 기능</p>
-          <div class="hi-sub-feats">${f.slice(2).map((x, i) => `<div><h3>${esc(x.title)}</h3><p>${esc(x.body)}</p></div>`).join("")}</div>`)}
+          <div class="hi-sub-feats">${f.slice(2).map((x, i) => `<div>${ico(FICON[svc.key][i + 2])}<h3>${esc(x.title)}</h3><p>${esc(x.body)}</p></div>`).join("")}</div>`)}
         ${row("how", "작동 방식", c.steps.heading, c.steps.lead, `
           <ol class="hi-steps">${c.steps.items.map((s, i) => `<li><span class="hi-n">${i + 1}</span><b>${esc(s.title)}</b><span>${esc(s.body)}</span></li>`).join("")}</ol>`, "tight")}
         ${row("pricing", "요금제", P.heading, P.lead, `

@@ -380,3 +380,10 @@ h3{margin:0}
 /* 질문형 제목: 질문(30px 제목) > 답 요약(19px 진한 글씨) > 설명(16px 회색) */
 .hi .hi-label h2{margin-bottom:10px}
 .hi .hi-answer{font-size:19px!important;font-weight:600;color:var(--ink)!important;line-height:1.5!important;letter-spacing:-.3px;margin:0 0 10px}
+
+/* 위계 설계형 기능 아이콘: 주요 기능은 28px, 그 밖의 기능은 22px로 제목 왼쪽에 */
+.hi .hi-ico{color:var(--blue);flex:none}
+.hi .hi-lead-feats>div{display:grid;grid-template-columns:28px 1fr;column-gap:14px;align-items:start}
+.hi .hi-lead-feats .hi-ico{width:28px;height:28px;grid-row:span 2;margin-top:2px}
+.hi .hi-sub-feats>div{display:grid;grid-template-columns:22px 1fr;column-gap:12px;align-items:start}
+.hi .hi-sub-feats .hi-ico{width:22px;height:22px;grid-row:span 2;margin-top:1px}
