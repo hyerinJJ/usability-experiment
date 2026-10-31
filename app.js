@@ -136,24 +136,32 @@
       return run();
     }
 
-    // 동의
-    screen(`<h1>웹페이지 정보 탐색 평가</h1>
-      <p>서비스 소개 웹페이지 4개를 보며 필요한 정보를 찾는 과업을 수행합니다. 약 25분이 걸립니다.</p>
-      <div class="consent">
-        <p><strong>참여 안내</strong></p>
-        <p>응답과 화면 조작 기록(클릭, 시간 등)은 익명 코드로 저장되며 인간공학실험 수업의 연구 목적으로만 사용됩니다. 이름, 연락처 등 개인을 알아볼 수 있는 정보는 수집하지 않습니다.</p>
-        <p>참여는 자발적이며 언제든 창을 닫아 그만둘 수 있습니다. 그만두어도 불이익은 없습니다.</p>
-      </div>
-      <p><strong>주의사항</strong></p>
-      <ul><li>조용한 곳에서 마우스를 사용해 참여해 주세요.</li>
-      <li>실험 중에는 다른 탭이나 창으로 이동하지 말아 주세요.</li>
-      <li>진행 중에 페이지를 새로 고치거나 뒤로 나가면 처음부터 다시 할 수 없습니다.</li>
-      <li>답을 확인한 뒤에 보기를 선택해 주세요. 한 번 고른 답은 바꿀 수 없습니다.</li></ul>
-      <label><input type="checkbox" id="agree"> 위 내용을 확인했으며 참여에 동의합니다.</label>
-      <div class="err"></div>
-      <button class="primary" id="go" disabled>시작하기</button>`);
-    root.querySelector("#agree").addEventListener("change", (e) => { root.querySelector("#go").disabled = !e.target.checked; });
-    await waitClick("#go");
+    // 파일럿은 웹사이트 체험만(동의, 사전 질문, 연습, 페이지별 설문, 마지막 설문 생략). 전체 흐름이 필요하면 주소에 &full=1
+    const lite = pilot && qs.get("full") !== "1";
+    if (lite) {
+      screen(`<h1>웹사이트 체험(파일럿)</h1><p>서비스 소개 웹페이지 4개를 차례로 봅니다. 페이지마다 먼저 ${C.EXPLORE_SEC}초 동안 둘러본 뒤, 오른쪽 질문에 맞는 답을 왼쪽 페이지에서 찾아 고르면 됩니다. 과업마다 제한시간은 ${C.LIMIT_SEC}초입니다.</p><button class="primary" id="go">시작하기</button>`);
+      await waitClick("#go");
+    } else {
+      // 동의
+      screen(`<h1>웹페이지 정보 탐색 평가</h1>
+        <p>서비스 소개 웹페이지 4개를 보며 필요한 정보를 찾는 과업을 수행합니다. 약 25분이 걸립니다.</p>
+        <div class="consent">
+          <p><strong>참여 안내</strong></p>
+          <p>응답과 화면 조작 기록(클릭, 시간 등)은 익명 코드로 저장되며 인간공학실험 수업의 연구 목적으로만 사용됩니다. 이름, 연락처 등 개인을 알아볼 수 있는 정보는 수집하지 않습니다.</p>
+          <p>참여는 자발적이며 언제든 창을 닫아 그만둘 수 있습니다. 그만두어도 불이익은 없습니다.</p>
+        </div>
+        <p><strong>주의사항</strong></p>
+        <ul><li>조용한 곳에서 마우스를 사용해 참여해 주세요.</li>
+        <li>실험 중에는 다른 탭이나 창으로 이동하지 말아 주세요.</li>
+        <li>진행 중에 페이지를 새로 고치거나 뒤로 나가면 처음부터 다시 할 수 없습니다.</li>
+        <li>답을 확인한 뒤에 보기를 선택해 주세요. 한 번 고른 답은 바꿀 수 없습니다.</li></ul>
+        <label><input type="checkbox" id="agree"> 위 내용을 확인했으며 참여에 동의합니다.</label>
+        <div class="err"></div>
+        <button class="primary" id="go" disabled>시작하기</button>`);
+      root.querySelector("#agree").addEventListener("change", (e) => { root.querySelector("#go").disabled = !e.target.checked; });
+      await waitClick("#go");
+
+    }
 
     // 서버에서 참가자 코드와 배정 칸 받기
     const token = uuid();
@@ -178,43 +186,45 @@
     saveSession(s);
     window.addEventListener("beforeunload", leaveGuard);
 
-    // 사전 질문
-    screen(`<h1>사전 질문</h1>
-      <fieldset data-q="age"><legend>연령대</legend>${["만 19세 이하", "20~24세", "25~29세", "30세 이상"].map((l, i) => `<label><input type="radio" name="age" value="${l}"> ${l}</label>`).join(" &nbsp; ")}</fieldset>
-      <fieldset data-q="gender"><legend>성별</legend>${["여성", "남성", "응답하지 않음"].map((l) => `<label><input type="radio" name="gender" value="${l}"> ${l}</label>`).join(" &nbsp; ")}</fieldset>
-      ${radioQ("major", "전공 계열", ["공학", "자연과학", "인문, 사회과학", "경영, 경제", "예술, 디자인", "기타"])}
-      ${radioQ("design_exp", "웹이나 앱 화면 디자인(UI, UX) 관련 수업을 듣거나 작업해 본 적이 있나요?", ["있음", "없음"])}
-      ${radioQ("genai_web_exp", "생성형 AI(ChatGPT, Claude 등)로 웹페이지나 앱 화면을 만들어 본 적이 있나요?", ["있음", "없음"])}
-      ${radioQ("plan_compare_exp", "최근 1년 안에 구독 서비스나 소프트웨어의 요금제를 직접 비교해 본 적이 있나요?", ["있음", "없음"])}
-      <div class="err"></div><button class="primary" id="go">다음</button>`);
-    await waitValid(["age", "gender", "major", "design_exp", "genai_web_exp", "plan_compare_exp"]);
-    send("pre", s, { age: val("age"), gender: val("gender"), major: val("major"), design_exp: val("design_exp"), genai_web_exp: val("genai_web_exp"), plan_compare_exp: val("plan_compare_exp") });
+    if (!lite) {
+      // 사전 질문
+      screen(`<h1>사전 질문</h1>
+        <fieldset data-q="age"><legend>연령대</legend>${["만 19세 이하", "20~24세", "25~29세", "30세 이상"].map((l, i) => `<label><input type="radio" name="age" value="${l}"> ${l}</label>`).join(" &nbsp; ")}</fieldset>
+        <fieldset data-q="gender"><legend>성별</legend>${["여성", "남성", "응답하지 않음"].map((l) => `<label><input type="radio" name="gender" value="${l}"> ${l}</label>`).join(" &nbsp; ")}</fieldset>
+        ${radioQ("major", "전공 계열", ["공학", "자연과학", "인문, 사회과학", "경영, 경제", "예술, 디자인", "기타"])}
+        ${radioQ("design_exp", "웹이나 앱 화면 디자인(UI, UX) 관련 수업을 듣거나 작업해 본 적이 있나요?", ["있음", "없음"])}
+        ${radioQ("genai_web_exp", "생성형 AI(ChatGPT, Claude 등)로 웹페이지나 앱 화면을 만들어 본 적이 있나요?", ["있음", "없음"])}
+        ${radioQ("plan_compare_exp", "최근 1년 안에 구독 서비스나 소프트웨어의 요금제를 직접 비교해 본 적이 있나요?", ["있음", "없음"])}
+        <div class="err"></div><button class="primary" id="go">다음</button>`);
+      await waitValid(["age", "gender", "major", "design_exp", "genai_web_exp", "plan_compare_exp"]);
+      send("pre", s, { age: val("age"), gender: val("gender"), major: val("major"), design_exp: val("design_exp"), genai_web_exp: val("genai_web_exp"), plan_compare_exp: val("plan_compare_exp") });
 
-    // 연습: 본 과업과 같은 순서(둘러보기 → 과업)를 그대로 해 본다
-    screen(`<h1>연습</h1>
-      <p>본 과업 전에 방법을 익히는 연습입니다. 연습 결과는 기록하지 않습니다.</p>
-      <ul><li>페이지마다 먼저 ${C.EXPLORE_SEC}초 동안 페이지를 자유롭게 둘러봅니다. 이때는 버튼이 눌리지 않고 스크롤만 됩니다.</li>
-      <li>둘러볼 때 요금제나 이용권 표, 자주 묻는 질문, 버튼이 어디 있는지 봐 두면 과업에서 찾기 쉽습니다.</li>
-      <li>둘러보기가 끝나면 과업이 나옵니다. 화면 왼쪽에는 웹페이지가, 오른쪽에는 질문이 나옵니다.</li>
-      <li>질문을 읽고 왼쪽 웹페이지에서 답을 찾은 뒤, 오른쪽 보기 중 하나를 누르면 다음으로 넘어갑니다.</li>
-      <li>화면을 열라는 과업은 해당 버튼을 누르면 끝납니다.</li>
-      <li>과업마다 제한시간은 ${C.LIMIT_SEC}초입니다.</li></ul>
-      <button class="primary" id="go">연습 시작</button>`);
-    await waitClick("#go");
-    screen(`<p class="progress">연습</p><h1>먼저 페이지를 둘러보세요</h1><p>연습용 도서관 페이지가 나옵니다. ${C.EXPLORE_SEC}초 동안 위아래로 자유롭게 살펴보세요. 시간이 끝나면 자동으로 과업이 시작됩니다.</p><button class="primary" id="go">둘러보기 시작</button>`);
-    await waitClick("#go");
-    await explore(null);
-    for (const task of window.PRACTICE.tasks) {
-      screen(`<p class="progress">연습</p><h1>${esc(task.id)}</h1><p>${esc(task.prompt)}</p><button class="primary" id="go">과업 시작</button>`);
+      // 연습: 본 과업과 같은 순서(둘러보기 → 과업)를 그대로 해 본다
+      screen(`<h1>연습</h1>
+        <p>본 과업 전에 방법을 익히는 연습입니다. 연습 결과는 기록하지 않습니다.</p>
+        <ul><li>페이지마다 먼저 ${C.EXPLORE_SEC}초 동안 페이지를 자유롭게 둘러봅니다. 이때는 버튼이 눌리지 않고 스크롤만 됩니다.</li>
+        <li>둘러볼 때 요금제나 이용권 표, 자주 묻는 질문, 버튼이 어디 있는지 봐 두면 과업에서 찾기 쉽습니다.</li>
+        <li>둘러보기가 끝나면 과업이 나옵니다. 화면 왼쪽에는 웹페이지가, 오른쪽에는 질문이 나옵니다.</li>
+        <li>질문을 읽고 왼쪽 웹페이지에서 답을 찾은 뒤, 오른쪽 보기 중 하나를 누르면 다음으로 넘어갑니다.</li>
+        <li>화면을 열라는 과업은 해당 버튼을 누르면 끝납니다.</li>
+        <li>과업마다 제한시간은 ${C.LIMIT_SEC}초입니다.</li></ul>
+        <button class="primary" id="go">연습 시작</button>`);
       await waitClick("#go");
-      const pr = await runTask({ s, task, practice: true });
-      const head = pr.ok ? "잘했어요" : pr.timeout ? "시간이 끝났습니다" : "다시 확인해 보세요";
-      const ans = task.choices ? `정답은 "${esc(task.choices[task.correct])}"입니다. ` : "";
-      screen(`<p class="progress">연습</p><h1>${head}</h1><p>${ans}${esc(task.tip)}</p><button class="primary" id="go">다음</button>`);
+      screen(`<p class="progress">연습</p><h1>먼저 페이지를 둘러보세요</h1><p>연습용 도서관 페이지가 나옵니다. ${C.EXPLORE_SEC}초 동안 위아래로 자유롭게 살펴보세요. 시간이 끝나면 자동으로 과업이 시작됩니다.</p><button class="primary" id="go">둘러보기 시작</button>`);
+      await waitClick("#go");
+      await explore(null);
+      for (const task of window.PRACTICE.tasks) {
+        screen(`<p class="progress">연습</p><h1>${esc(task.id)}</h1><p>${esc(task.prompt)}</p><button class="primary" id="go">과업 시작</button>`);
+        await waitClick("#go");
+        const pr = await runTask({ s, task, practice: true });
+        const head = pr.ok ? "잘했어요" : pr.timeout ? "시간이 끝났습니다" : "다시 확인해 보세요";
+        const ans = task.choices ? `정답은 "${esc(task.choices[task.correct])}"입니다. ` : "";
+        screen(`<p class="progress">연습</p><h1>${head}</h1><p>${ans}${esc(task.tip)}</p><button class="primary" id="go">다음</button>`);
+        await waitClick("#go");
+      }
+      screen(`<h1>연습이 끝났습니다</h1><p>이제 본 과업을 시작합니다. 서비스 소개 웹페이지 4개를 차례로 보며, 페이지마다 ${C.EXPLORE_SEC}초 둘러보기, 과업 4개, 짧은 질문 순서로 진행합니다.</p><button class="primary" id="go">본 과업 시작</button>`);
       await waitClick("#go");
     }
-    screen(`<h1>연습이 끝났습니다</h1><p>이제 본 과업을 시작합니다. 서비스 소개 웹페이지 4개를 차례로 보며, 페이지마다 ${C.EXPLORE_SEC}초 둘러보기, 과업 4개, 짧은 질문 순서로 진행합니다.</p><button class="primary" id="go">본 과업 시작</button>`);
-    await waitClick("#go");
 
     // 본 과업
     const plan = assignment(cell);
@@ -236,30 +246,32 @@
         backup.tasks.push(row); keepBackup(s);
         send("task", s, row);
       }
-      await quizAndSus(s, step, svc);
+      if (!lite) await quizAndSus(s, step, svc);
     }
 
-    // AI 생성 지각도와 주관식(모든 조건이 끝난 뒤)
-    const thumb = (p) => `<div class="thumb" aria-hidden="true"><div class="thumb-in">${window.renderCondition(p.service, p.condition)}</div></div>`;
-    screen(`<h1>마지막 질문</h1>
-      <p>지금까지 본 네 페이지입니다. 페이지마다 <strong>AI가 만든 것 같다고 느낀 정도</strong>를 골라 주세요.</p>
-      <div class="recall">${plan.map((p) => { const v = window.SERVICES[p.service]; return `<fieldset data-q="ai_${p.position}" class="recall-item">${thumb(p)}<div><p class="rlabel">${p.position}번째: ${esc(v.brand)} (${esc(v.category)})</p>${likert("ai_" + p.position, ["전혀 아니다", "", "", "", "", "", "매우 그렇다"])}</div></fieldset>`; }).join("")}</div>
-      <fieldset data-q="hardest"><legend>네 페이지 중 원하는 정보를 찾기 가장 어려웠던 페이지는 어디였나요?</legend>
-        ${plan.map((p) => { const v = window.SERVICES[p.service]; return `<label><input type="radio" name="hardest" value="${p.position}"> ${p.position}번째: ${esc(v.brand)}</label>`; }).join(" &nbsp; ")}
-        &nbsp; <label><input type="radio" name="hardest" value="0"> 비슷했음</label></fieldset>
-      <fieldset><legend>그렇게 고른 이유를 짧게 적어 주세요. (선택)</legend><textarea id="open2" placeholder="예: 요금이 어디 있는지 한눈에 안 보였어요"></textarea></fieldset>
-      ${pilot ? `<fieldset><legend>[파일럿] 진행하면서 헷갈렸던 점, 너무 쉽거나 어려웠던 과업, 걸린 시간에 대한 느낌을 자유롭게 적어 주세요.</legend><textarea id="pilotfb"></textarea></fieldset>` : ""}
-      <div class="err"></div><button class="primary" id="go">제출</button>`);
-    await waitValid([...plan.map((p) => "ai_" + p.position), "hardest"]);
-    plan.forEach((p) => {
-      const r = { kind: "ai", position: p.position, condition: p.condition, service: p.service, ai_rating: +val("ai_" + p.position) };
-      backup.surveys.push(r); send("survey", s, r);
-    });
-    const hp = +val("hardest"); const hs = plan.find((p) => p.position === hp);
-    const open = { kind: "open", position: 0, condition: hs ? hs.condition : "", service: hs ? hs.service : "", open1: hs ? `${hp}번째 ${window.SERVICES[hs.service].brand}` : "비슷했음", open2: root.querySelector("#open2").value.trim() };
-    backup.surveys.push(open); send("survey", s, open);
+    if (!lite) {
+      // AI 생성 지각도와 주관식(모든 조건이 끝난 뒤)
+      const thumb = (p) => `<div class="thumb" aria-hidden="true"><div class="thumb-in">${window.renderCondition(p.service, p.condition)}</div></div>`;
+      screen(`<h1>마지막 질문</h1>
+        <p>지금까지 본 네 페이지입니다. 페이지마다 <strong>AI가 만든 것 같다고 느낀 정도</strong>를 골라 주세요.</p>
+        <div class="recall">${plan.map((p) => { const v = window.SERVICES[p.service]; return `<fieldset data-q="ai_${p.position}" class="recall-item">${thumb(p)}<div><p class="rlabel">${p.position}번째: ${esc(v.brand)} (${esc(v.category)})</p>${likert("ai_" + p.position, ["전혀 아니다", "", "", "", "", "", "매우 그렇다"])}</div></fieldset>`; }).join("")}</div>
+        <fieldset data-q="hardest"><legend>네 페이지 중 원하는 정보를 찾기 가장 어려웠던 페이지는 어디였나요?</legend>
+          ${plan.map((p) => { const v = window.SERVICES[p.service]; return `<label><input type="radio" name="hardest" value="${p.position}"> ${p.position}번째: ${esc(v.brand)}</label>`; }).join(" &nbsp; ")}
+          &nbsp; <label><input type="radio" name="hardest" value="0"> 비슷했음</label></fieldset>
+        <fieldset><legend>그렇게 고른 이유를 짧게 적어 주세요. (선택)</legend><textarea id="open2" placeholder="예: 요금이 어디 있는지 한눈에 안 보였어요"></textarea></fieldset>
+        ${pilot ? `<fieldset><legend>[파일럿] 진행하면서 헷갈렸던 점, 너무 쉽거나 어려웠던 과업, 걸린 시간에 대한 느낌을 자유롭게 적어 주세요.</legend><textarea id="pilotfb"></textarea></fieldset>` : ""}
+        <div class="err"></div><button class="primary" id="go">제출</button>`);
+      await waitValid([...plan.map((p) => "ai_" + p.position), "hardest"]);
+      plan.forEach((p) => {
+        const r = { kind: "ai", position: p.position, condition: p.condition, service: p.service, ai_rating: +val("ai_" + p.position) };
+        backup.surveys.push(r); send("survey", s, r);
+      });
+      const hp = +val("hardest"); const hs = plan.find((p) => p.position === hp);
+      const open = { kind: "open", position: 0, condition: hs ? hs.condition : "", service: hs ? hs.service : "", open1: hs ? `${hp}번째 ${window.SERVICES[hs.service].brand}` : "비슷했음", open2: root.querySelector("#open2").value.trim() };
+      backup.surveys.push(open); send("survey", s, open);
+    }
     const total = Math.round((Date.now() - s.t0) / 1000);
-    send("finish", s, { total_sec: total, pilot_feedback: pilot ? root.querySelector("#pilotfb").value.trim() : "" });
+    send("finish", s, { total_sec: total, pilot_feedback: pilot && !lite ? root.querySelector("#pilotfb").value.trim() : "" });
     s.status = "done"; saveSession(s); keepBackup(s);
     window.removeEventListener("beforeunload", leaveGuard);
 
