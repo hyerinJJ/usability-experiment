@@ -102,23 +102,11 @@
   }
 
   async function run() {
-    // 이전 기록 확인(본 실험 참가자는 한 번만 참여)
+    // 이전 기록 확인: 진행 중에 끊긴 기록은 중단 처리하고, 같은 브라우저에서도 새 참가자로 다시 시작한다
     const prev = loadSession();
     if (prev && prev.status === "running") {
       send("abort", prev, { reason: "진행 중 새로고침 또는 재접속" });
       prev.status = "aborted"; saveSession(prev);
-      if (!prev.pilot && !pilot) {
-        screen(`<h1>실험이 중단되었습니다</h1><p>진행 중에 페이지를 새로 고치거나 닫으면 기록이 이어지지 않아 다시 참여할 수 없습니다. 연구진(${esc(C.CONTACT)})에게 알려 주세요.</p>`);
-        return;
-      }
-    }
-    if (prev && !prev.pilot && !pilot && prev.status === "done") {
-      screen(`<h1>이미 참여를 마치셨습니다</h1><p>참여해 주셔서 감사합니다. 한 사람은 한 번만 참여할 수 있습니다.</p>`);
-      return;
-    }
-    if (prev && !prev.pilot && !pilot && prev.status === "aborted") {
-      screen(`<h1>실험이 중단되었습니다</h1><p>이 브라우저에서는 다시 참여할 수 없습니다. 연구진(${esc(C.CONTACT)})에게 알려 주세요.</p>`);
-      return;
     }
     if (!codeDone) { pilot = (await askCode()) === "pilot"; codeDone = true; }
 
