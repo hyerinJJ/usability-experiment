@@ -22,7 +22,7 @@ const HEAD = {
     "quiz_total", "sus_items", "sus_score", "ai_rating", "open1", "open2", "explore_scroll_pct", "saved_at"]
 };
 
-function doGet() { return out({ ok: true, msg: "실험 서버가 동작 중입니다.", version: 7, key_set: String(ADMIN_KEY) !== "여기에_관리자_비밀번호" }); }
+function doGet() { return out({ ok: true, msg: "실험 서버가 동작 중입니다.", version: 8, key_set: String(ADMIN_KEY) !== "여기에_관리자_비밀번호" }); }
 
 function doPost(e) {
   let req;
@@ -46,6 +46,7 @@ function handle(req) {
     if (a === "admin_update") return adminUpdate(req);
     if (a === "admin_delete_pilot") return deletePilot();
     if (a === "admin_delete") return deleteParticipant(req.pid);
+    if (a === "admin_import") return adminImport(req);
     throw new Error("알 수 없는 관리자 요청");
   }
   // 이하 참가자 요청: pid와 token이 맞아야 기록한다
@@ -122,6 +123,29 @@ function deletePilot() {
     for (let i = rows.length - 1; i >= 0; i--) if (truthy(rows[i].pilot)) { s.deleteRow(rows[i]._row); n++; }
   });
   return { deleted: n };
+}
+
+// 참가자 화면 마지막에 내려받은 백업 CSV를 시트에 다시 넣는다(전송이 끊겨 빠진 기록 복구용)
+// 같은 과업, 설문 행이 이미 있으면 덮어쓰고 없으면 새로 넣는다. 과업 16개와 설문 13개가 모두 있으면 완료로 바꾼다
+function adminImport(req) {
+  const p = findParticipant(req.pid);
+  if (!p) throw new Error(req.pid + " 참가자가 시트에 없습니다.");
+  const now = new Date().toISOString();
+  let nt = 0, ns = 0;
+  (req.tasks || []).forEach(function (r) {
+    r.key = [p.pid, r.position, r.task].join("|"); r.pid = p.pid; r.pilot = p.pilot; r.cell = p.cell; r.saved_at = r.saved_at || now;
+    upsert("tasks", r); nt++;
+  });
+  (req.surveys || []).forEach(function (r) {
+    r.key = [p.pid, r.kind, r.position || 0].join("|"); r.pid = p.pid; r.pilot = p.pilot; r.saved_at = r.saved_at || now;
+    upsert("surveys", r); ns++;
+  });
+  let completed = false;
+  if (req.complete && p.status !== "완료") {
+    updateRow("participants", p._row, { status: "완료", finished_at: now, note: appendNote(p.note, "백업 CSV로 복구") });
+    completed = true;
+  }
+  return { tasks: nt, surveys: ns, completed: completed };
 }
 
 // 참가자 한 명의 모든 기록(참가자 정보, 과업, 설문)을 지운다. 지운 번호는 다음 참가자가 받는다

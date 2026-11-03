@@ -304,9 +304,54 @@
       <h3>파일럿</h3>
       <div class="row"><button class="b" data-d="ptasks">파일럿 과업 자료</button><button class="b" data-d="psurveys">파일럿 설문 자료</button><button class="b" data-d="ppeople">파일럿 참가자</button></div>
       <h3>원자료 전체</h3>
-      <div class="row"><button class="b" data-d="raw_tasks">tasks 시트</button><button class="b" data-d="raw_surveys">surveys 시트</button><button class="b" data-d="raw_people">participants 시트</button></div>`;
+      <div class="row"><button class="b" data-d="raw_tasks">tasks 시트</button><button class="b" data-d="raw_surveys">surveys 시트</button><button class="b" data-d="raw_people">participants 시트</button></div>
+      <h3>백업 CSV로 기록 복구</h3>
+      <p class="note">전송이 끊겨 기록이 빠진 참가자의 마지막 화면 백업 파일(P00_tasks.csv, P00_surveys.csv)을 함께 골라 올리세요. 이미 있는 행은 덮어쓰고 빠진 행만 채웁니다. 과업 16개와 설문 13개가 모두 있으면 상태를 완료로 바꿉니다.</p>
+      <div class="row"><input type="file" id="impfile" accept=".csv" multiple> <button class="b p" id="impgo">올리기</button></div>
+      <p class="note" id="impmsg"></p>`;
     document.querySelectorAll("#s-download [data-d]").forEach((b) => b.addEventListener("click", () => dl(b.dataset.d)));
+    $("#impgo").addEventListener("click", importBackup);
   }
+  // ---------- 백업 CSV 복구
+  function parseCSV(text) {
+    text = text.replace(/^\ufeff/, "");
+    const rows = []; let row = [], cur = "", q = false;
+    for (let i = 0; i < text.length; i++) {
+      const ch = text[i];
+      if (q) { if (ch === '"') { if (text[i + 1] === '"') { cur += '"'; i++; } else q = false; } else cur += ch; }
+      else if (ch === '"') q = true;
+      else if (ch === ",") { row.push(cur); cur = ""; }
+      else if (ch === "\n" || ch === "\r") { if (ch === "\r" && text[i + 1] === "\n") i++; row.push(cur); cur = ""; if (row.some((x) => x !== "")) rows.push(row); row = []; }
+      else cur += ch;
+    }
+    row.push(cur); if (row.some((x) => x !== "")) rows.push(row);
+    const h = rows.shift() || [];
+    const num = (v) => (v !== "" && /^-?\d+(\.\d+)?$/.test(v) ? Number(v) : v);
+    return rows.map((r) => { const o = {}; h.forEach((k, j) => { o[k] = k === "sus_items" ? (r[j] ?? "") : num(r[j] ?? ""); }); return o; });
+  }
+  async function importBackup() {
+    const files = [...($("#impfile").files || [])], msg = $("#impmsg");
+    if (!files.length) { msg.textContent = "CSV 파일을 골라 주세요."; return; }
+    const tasks = [], surveys = [];
+    for (const f of files) {
+      const rows = parseCSV(await f.text());
+      if (!rows.length) continue;
+      if ("task" in rows[0]) tasks.push(...rows); else if ("kind" in rows[0]) surveys.push(...rows);
+    }
+    const pids = [...new Set([...tasks, ...surveys].map((r) => String(r.pid)))];
+    if (pids.length !== 1) { msg.textContent = "한 참가자의 파일만 올려 주세요. 파일 안의 참가자: " + pids.join(", "); return; }
+    const pid = pids[0];
+    const strip = (r) => { const o = Object.assign({}, r); delete o.pid; delete o.cell; return o; };
+    const complete = tasks.length >= 16 && surveys.length >= 13;
+    if (!confirm(`${pid}의 과업 ${tasks.length}행, 설문 ${surveys.length}행을 시트에 넣습니다.${complete ? " 상태를 완료로 바꿉니다." : ""}`)) return;
+    msg.textContent = "올리는 중...";
+    try {
+      const r = await api({ action: "admin_import", pid, tasks: tasks.map(strip), surveys: surveys.map(strip), complete });
+      msg.textContent = `${pid}: 과업 ${r.tasks}행, 설문 ${r.surveys}행을 넣었습니다.${r.completed ? " 상태를 완료로 바꿨습니다." : ""}`;
+      await load();
+    } catch (e) { msg.textContent = e.message.includes("알 수 없는") ? "Apps Script를 새 버전(v8)으로 다시 배포해야 합니다." : e.message; }
+  }
+
   function dl(kind) {
     const P = pmap();
     const withFlags = (t) => { const p = P[t.pid] || {}; return Object.assign({}, t, {
